@@ -1,5 +1,5 @@
 @section('notifications')
-@if($user->first()['is_admin'])
+@if($user->is_admin)
 @if( isset($notifications) )
 <!-- Notifications: style can be found in dropdown.less -->
 <li class="dropdown messages-menu">
