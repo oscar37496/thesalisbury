@@ -4,25 +4,7 @@
 <!-- DATA TABLES -->
 <link href="/css/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css" />
 
-<script type="text/javascript">
-function messageUser(id)
-{
-	if(!FB.getLoginStatus()){
-		FB.login();
-	}
-	FB.ui({
-	  method: 'send',
-	  link: 'http://thesalisbury.com.au/',
-	  to: id,
-	}, updateLastMessaged(id)
-	);
-};
 
-function updateLastMessaged(id){
-	$('#'+id).load('/account/charles/users/'+id);
-	
-};
-</script>
 <script type="text/javascript">
     function select_all(obj) {
         var text_val=eval(obj);
@@ -67,7 +49,7 @@ function updateLastMessaged(id){
 									<td>{{{ $user['last_name'] }}}</td>
 									<td id="{{{ $key }}}">{{{ $user['last_messaged'] }}} </td>
 									<td>
-										<textarea onclick="select_all(this)">Hey mate, 
+										<textarea style="display: none" id="{{{ $key }}}-text"onclick="select_all(this)">Hey mate, 
 Your final tab balance is {{{ money_format('%n', $user['balance'] / 100 ) }}}
 This will need to be paid as soon as possible.
 This can be paid either by:
@@ -82,7 +64,7 @@ Reference: Your name
 
 Note: Your tab debt above will need to be paid before 5pm Wednesday, for you to be ticked off the list of outstanding debts we will give to the bouncers.
 Thanks,
-Salisbury Syndicate</textarea><button type="button" onclick="messageUser({{{ $key }}})">Message</button>	
+Salisbury Syndicate</textarea><button class="copy-button" type="button" data-clipboard-target="{{{ $key }}}-text" onclick="messageUser({{{ $key }}})">Message</button>	
 									</td>
 									<td>{{{ money_format('%n', $user['total_spent_last_week'] / 100 ) }}}</td>
 									<td>{{{ money_format('%n', $user['total_spent'] / 100 ) }}}</td>
@@ -147,6 +129,58 @@ Salisbury Syndicate</textarea><button type="button" onclick="messageUser({{{ $ke
          fjs.parentNode.insertBefore(js, fjs);
        }(document, 'script', 'facebook-jssdk'));
     </script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.2.0/ZeroClipboard.min.js"></script>
+
+<script type="text/javascript">
+
+var client = new ZeroClipboard($(".copy-button"));
+function messageUser(id)
+{
+
+    FB.getLoginStatus(function(response) {
+        if(response.status == 'connected')
+        {
+            FB.ui({
+			  method: 'send',
+			  link: 'http://thesalisbury.com.au/',
+			  to: parseInt(id),
+			}, updateLastMessaged(id)
+			);
+        }
+        else if(response.status =='not_authorized'){
+            FB.login(function(response) {
+			   if (response.authResponse) {
+			     FB.ui({
+						  method: 'send',
+						  link: 'http://thesalisbury.com.au/',
+						  to: parseInt(id),
+						}, updateLastMessaged(id)
+						);	
+			   } 
+			 }, {scope: 'user_friends'});
+        }
+        else{
+            FB.login(function(response) {
+			   if (response.authResponse) {
+			     FB.ui({
+						  method: 'send',
+						  link: 'http://thesalisbury.com.au/',
+						  to: parseInt(id),
+						}, updateLastMessaged(id)
+						);	
+			   } 
+			 }, {scope: 'user_friends'});
+        }
+	})
+	
+};
+
+function updateLastMessaged(id){
+	$('#'+id).load('/account/charles/users/'+id);
+	
+};
+</script>
 
 @stop
 
