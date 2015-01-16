@@ -293,6 +293,7 @@ class AccountController extends BaseController {
 	//==========================================================================================
 	
 	public function getSysadminDashboard() {
+		
 		$data = $this -> getSessionData();
 		$data['user'] = User::where('id', $data['id']) -> first();
 		$data['user'] -> load('transaction', 'transaction.sku', 'bankTransaction');
@@ -309,6 +310,8 @@ class AccountController extends BaseController {
 		$data['equity'] = $data['assets'] - $data['liabilities'];
 		$data['payout'] = $this->getPayouts();
 		$data['takings_to_date'] = $data['equity'] + $data['payout'];
+		
+		
 
 		$data['location'] = 'SysAdmin Dashboard';
 		$data['description'] = 'An overview of your empire';
@@ -469,7 +472,7 @@ class AccountController extends BaseController {
 		$purchase->bank_transaction_id = $transactionid;
 		$purchase->save();
 		$transaction = BankTransaction::where('id', $transactionid)->first();
-		return $transaction->date.' '.money_format('%n', $transaction->amount / 100 ).' '.$transaction->description;
+		return 'Bank '.$transaction->date.' '.money_format('%n', $transaction->amount / 100 ).' '.$transaction->description;
 	}
 	
 	public function linkPurchaseCash($id){
@@ -483,7 +486,7 @@ class AccountController extends BaseController {
 		$purchase->cash_transaction_id = $transaction->id;
 		$purchase->bank_transaction_id = NULL;
 		$purchase->save();
-		return $transaction->date.' '.money_format('%n', $transaction->amount / 100 ).' '.$transaction->description;
+		return 'Cash '.$transaction->date.' '.money_format('%n', $transaction->amount / 100 ).' '.$transaction->description;
 	}
 	
 	public function uploadBankTransactions() {
@@ -646,7 +649,8 @@ class AccountController extends BaseController {
 			if(isset($purchases[0])){
 				$j=0;
 				while(isset($purchases[$j]) && $purchases[$j]->timestamp > $stock_volume->timestamp){
-					$stock_volume->volume += $purchases[$j]->volume;
+					//$stock_volume->volume += $purchases[$j]->volume;
+					$stock_value += $purchases[$j]->cost;
 					$j++;
 				}
 				
@@ -831,7 +835,7 @@ class AccountController extends BaseController {
 		$bank_transactions = BankTransaction::all();
 		if(isset($bank_transactions))
 		foreach ($bank_transactions as $transaction) {
-			$account_balance[] = ['time' => $transaction['date'], 'balance' => $transaction['balance'] / 100];
+			$account_balance[] = ['time' => $transaction->date, 'balance' => $transaction->balance / 100];
 		};
 		if(isset($account_balance))
 			return json_encode($account_balance);

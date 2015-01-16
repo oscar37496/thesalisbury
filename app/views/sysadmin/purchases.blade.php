@@ -45,14 +45,15 @@
 									<td>{{{ money_format('%n', $purchase->cost / 100 ) }}}</td>
 									<td id="{{{ $purchase->id }}}">
 										@if( $purchase -> bank_transaction_id != NULL)
-										{{{ $purchase->bank_transaction->date.' '.money_format('%n', $purchase->bank_transaction->amount / 100 ).' '.$purchase->bank_transaction->description }}} 
+										Bank {{{ $purchase->bank_transaction->date.' '.money_format('%n', $purchase->bank_transaction->amount / 100 ).' '.$purchase->bank_transaction->description }}} 
 										@elseif ($purchase -> cash_transaction_id != NULL)
-										{{{ $purchase->cash_transaction->date.' '.money_format('%n', $purchase->cash_transaction->amount / 100 ).' '.$purchase->cash_transaction->description }}}
+										Cash {{{ $purchase->cash_transaction->timestamp.' '.money_format('%n', $purchase->cash_transaction->amount / 100 ).' '.$purchase->cash_transaction->description }}}
 										@else
 										No Transaction Linked 
 										@endif
 									</td>
 									<td><select name="Bank Transactions" id="transactions" onchange="linkBank({{{ $purchase->id }}}, this.value);">
+									<option></option>
 									@foreach($bank_transactions as $transaction)
 									<option value="{{{ $transaction-> id }}}">{{{ $transaction->date.' '.money_format('%n', $transaction->amount / 100 ).' '.$transaction->description }}}</option>
 									@endforeach
