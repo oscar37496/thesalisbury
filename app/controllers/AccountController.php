@@ -24,7 +24,7 @@ class AccountController extends BaseController {
 				$data['friend_count']++;
 			}
 		}	
-		$data['drink_count'] = DB::select('SELECT SUM(quantity) `total` FROM transactions WHERE user_id = ? AND sku_id != 0', array($data['user']->first()['id']))[0]->total;
+		$data['drink_count'] = DB::select('SELECT SUM(quantity) `total` FROM transactions WHERE user_id = ?', array($data['user']->id))[0]->total;
 		if(!isset($data['drink_count'])) $data['drink_count'] = 0;
 		
 		
