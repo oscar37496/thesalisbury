@@ -30,7 +30,7 @@
 			<!-- small box -->
 			<div class="small-box bg-green">
 				<div class="inner">
-					<h3> {{{ money_format('%.0n', $user->balance/100) }}}<sup style="font-size: 20px">{{{ substr(number_format(abs($user->balance/100), 2),-3) }}}</sup>
+					<h3> {{{ substr(money_format('%.0n', $user->balance/100), 0, -3) }}}<sup style="font-size: 20px">{{{ substr(number_format(abs($user->balance/100), 2),-3) }}}</sup>
 					</h3>
 					<p>
 						Account Balance
@@ -46,9 +46,10 @@
 			<!-- small box -->
 			<div class="small-box bg-red">
 				<div class="inner">
-					<h3> {{{ $drink_count }}} </h3>
+					<h3> {{{ substr(number_format($drink_count, 1), 0, -2) }}}<sup style="font-size: 20px">{{{ substr(number_format($drink_count, 1), -2) }}}</sup>
+					</h3>
 					<p>
-						Drinks Bought
+						Standard Drinks Bought
 					</p>
 				</div>
 				<div class="icon">
