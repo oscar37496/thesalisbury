@@ -18,7 +18,7 @@ Route::group(array('prefix' => 'account', 'before' => 'auth'), function() {
 		return Redirect::to('/account/dashboard');
 	});
 	Route::get('dashboard', 'AccountController@getDashboard');
-	Route::get('statistics', 'AccountController@getStatistics');
+	//Route::get('statistics', 'AccountController@getStatistics');
 	Route::get('transactions', 'AccountController@getTransactions');
 	Route::get('cards', 'AccountController@getCards');
 	Route::get('friends', 'AccountController@getFriends');

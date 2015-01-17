@@ -10,6 +10,7 @@ class AccountController extends BaseController {
 
 	public function getDashboard() {
 		$data = $this -> getSessionData();
+
 		$data['user'] = User::where('id', $data['id']) -> first();
 		$data['user'] -> load('transaction');
 
@@ -611,7 +612,7 @@ class AccountController extends BaseController {
 		$bank_balance = ($t=BankTransaction::latest('date')->first())?$t->balance:0; 
 		//DB::select('SELECT balance FROM bank_transactions ORDER BY date DESC LIMIT 0, 1')[0]->balance;
 		$bank_balance = ($bank_balance > 0 ? $bank_balance : 0);
-		$cash = $current = DB::select('SELECT SUM(amount) `total` FROM cash_transactions')[0]->total - DB::select("SELECT SUM(amount) `total` FROM bank_transactions WHERE app_type = 'CASHDEPOSIT'")[0]->total;
+		$cash = DB::select('SELECT SUM(amount) `total` FROM cash_transactions')[0]->total - DB::select("SELECT SUM(amount) `total` FROM bank_transactions WHERE app_type = 'CASHDEPOSIT'")[0]->total;
 		$stock_value = $this->getStockValue();
 		return $tab_assets + $bank_balance + $cash + $stock_value;
 	}

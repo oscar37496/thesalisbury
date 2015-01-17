@@ -22,9 +22,9 @@
 		<li @if(strcmp($location, 'Transactions') == 0) class="active" @endif>
 			<a href="/account/transactions"> <i class="fa fa-table"></i> <span>Transactions</span> <!--<small class="badge pull-right bg-green">new</small>--> </a>
 		</li>
-		<li @if(strcmp($location, 'Statistics') == 0) class="active" @endif>
+		{{--<li @if(strcmp($location, 'Statistics') == 0) class="active" @endif>
 			<a href="/account/statistics"> <i class="fa fa-bar-chart-o"></i> <span>Statistics</span> <!--<small class="badge pull-right bg-green">new</small>--> </a>
-		</li>
+		</li>--}}
 		<li @if(strcmp($location, 'Cards') == 0) class="active" @endif>
 			<a href="/account/cards"> <i class="fa fa-credit-card"></i> <span>Cards</span></a>
 		</li>
