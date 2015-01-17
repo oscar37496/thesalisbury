@@ -50,8 +50,7 @@
 	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-	
-	  ga('create', 'UA-48868606-2', 'auto');
+	  ga('create', {trackingId: 'UA-48868606-2', cookieDomain: 'auto' @yield('ga-parameters') });
 	  ga('require', 'linkid', 'linkid.js');
 	  ga('send', 'pageview');
 	
@@ -69,12 +68,8 @@
 			<a href="#" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </a>
 			<div class="navbar-right">
 				<ul class="nav navbar-nav">
-					<!-- Messages: style can be found in dropdown.less-->
-					
 					@yield('notifications')
-					
 					@yield('account-dropdown')
-
 				</ul>
 			</div>
 		</nav>
