@@ -30,10 +30,10 @@
 			<!-- small box -->
 			<div class="small-box bg-green">
 				<div class="inner">
-					<h3> {{{ substr(money_format('%.0n', $user->balance/100), 0, -3) }}}<sup style="font-size: 20px">{{{ substr(number_format(abs($user->balance/100), 2),-3) }}}</sup>
+					<h3> {{{ substr(money_format('%n',$user->balance/100),0,-3) }}}<sup style="font-size: 20px">{{{ substr(number_format(abs($user->balance/100), 2),-3) }}}</sup>
 					</h3>
 					<p>
-						Account Balance Test
+						Account Balance
 					</p>
 				</div>
 				<div class="icon">
