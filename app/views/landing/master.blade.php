@@ -101,7 +101,7 @@
     <header>
         <div class="container">
             <div class="intro-text">
-                <div class="intro-lead-in">Established 1969</div>
+                <div class="intro-lead-in">Established 1989</div>
                 <div class="intro-heading">The Salisbury Bar</div>
                 <a href="#history" class="page-scroll btn btn-xl">Tell Me More</a>
             </div>
