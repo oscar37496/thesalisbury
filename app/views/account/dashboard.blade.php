@@ -46,10 +46,10 @@
 			<!-- small box -->
 			<div class="small-box bg-red">
 				<div class="inner">
-					<h3> {{{ substr(number_format($drink_count, 1), 0, -2) }}}<sup style="font-size: 20px">{{{ substr(number_format($drink_count, 1), -2) }}}</sup>
+					<h3> {{{ substr(number_format($drink_count, 1), 0, -2) }}}  @if($drink_count!=round($drink_count)) <sup style="font-size: 20px">{{{ substr(number_format($drink_count, 1), -2) }}}</sup> @endif
 					</h3>
 					<p>
-						Standard Drinks Bought
+						@if($user->is_social || $user->is_admin) Standard @endif Drinks Bought
 					</p>
 				</div>
 				<div class="icon">
@@ -58,7 +58,7 @@
 				<a href="/account/statistics" class="small-box-footer"> More info <i class="fa fa-arrow-circle-right"></i> </a>
 			</div>
 		</div><!-- ./col -->
-		@if($user->is_social)
+		@if($user->is_social || $user->is_admin)
 		<div class="col-lg-3 col-xs-6">
 			<!-- small box -->
 			<div class="small-box bg-yellow">

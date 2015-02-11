@@ -28,7 +28,7 @@
 		<li @if(strcmp($location, 'Cards') == 0) class="active" @endif>
 			<a href="/account/cards"> <i class="fa fa-credit-card"></i> <span>Cards</span></a>
 		</li>
-		@if( $user->is_social)
+		@if( $user->is_social || $user->is_admin)
 		<li @if(strcmp($location, 'Friends') == 0) class="active" @endif>
 			<a href="/account/friends"> <i class="fa fa-users"></i> <span>Friends</span></a>
 		</li>

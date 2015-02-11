@@ -17,7 +17,7 @@ class AccountController extends BaseController {
 		$data['sku_count'] = $this -> getSkuCount($data['user']);
 		$data['account_balance'] = $this -> getAccountBalanceTimeline($data['user']);
 
-		$friends =   (new FacebookRequest($data['fbsession'], 'GET', '/me/friends')) -> execute() -> getGraphObject(GraphUser::className()) -> asArray()['data'];
+		$friends =   (new FacebookRequest($data['fb_session'], 'GET', '/me/friends')) -> execute() -> getGraphObject(GraphUser::className()) -> asArray()['data'];
 		$data['friend_count'] = 0;
 		foreach($friends as $graph_user){
 			$friend = User::where('id', $graph_user->id) -> first();
@@ -88,13 +88,13 @@ class AccountController extends BaseController {
 	
     	$data = $this -> getSessionData();
 		$data['user'] = User::where('id', $data['id']) -> first();
-		if(!$data['user']->is_social )
+		if( (!$data['user']->is_social) && (!$data['user']->is_admin))
 			return Redirect::to('/account/dashboard');
 		
 		$data['location'] = 'Friends';
 		$data['description'] = 'Your friends that have Salisbury Tabs';
 		
-		$friends =   (new FacebookRequest($data['fbsession'], 'GET', '/me/friends')) -> execute() -> getGraphObject(GraphUser::className()) -> asArray()['data'];
+		$friends =   (new FacebookRequest($data['fb_session'], 'GET', '/me/friends')) -> execute() -> getGraphObject(GraphUser::className()) -> asArray()['data'];
 		foreach($friends as $graph_user){
 			$user = User::where('id', $graph_user->id) -> first();
 			if($user['is_activated'] && $user['is_social']){
@@ -569,6 +569,8 @@ class AccountController extends BaseController {
 		$data['description'] = 'Message users on Facebook';
 
 		$users = User::all();
+		
+		
 		foreach ($users as $user) {
 			if ($user['is_activated']) {
 				$friend['is_activated'] = TRUE;
@@ -678,9 +680,8 @@ class AccountController extends BaseController {
 	
 	private function getSessionData() {
 		FacebookSession::setDefaultApplication($_ENV['facebook_api_id'], $_ENV['facebook_api_secret']);
-		setlocale(LC_MONETARY, "en_US.UTF-8");
 		$data['id'] = Session::get('id');
-		$data['fbsession'] = Session::get('fbsession');
+		$data['fb_session'] = Session::get('fb_session');
 		$data['fbuser'] = Session::get('fbuser');
 		$data['logout_url'] = Session::get('logout_url');
 		$data['notifications'] = Notification::all();
@@ -858,11 +859,6 @@ class AccountController extends BaseController {
 			return json_encode($account_balance);
 	}
 
-	function cmp($a,$b){
-		if(strtotime($a['time']) == strtotime($b['time'])) return 0;
-		return (strtotime($a['time']) > strtotime($b['time']))? 1 : -1;
-	}
-
 	private function getSkuCount($user) {
 		if(isset($user)){
 			$transactions = $user->transaction;
@@ -872,19 +868,15 @@ class AccountController extends BaseController {
 		foreach ($transactions as $transaction) {
 			if ($transaction['sku'] != NULL) {
 				if (!isset($skus[$transaction['sku']['id']])) {
-					$skus[$transaction['sku']['id']]['description'] = $transaction['sku']['description'];
-					$skus[$transaction['sku']['id']]['count'] = 0;
+					$skus[$transaction['sku']['id']]['label'] = $transaction['sku']['description'];
+					$skus[$transaction['sku']['id']]['value'] = 0;
 				}
-				$skus[$transaction['sku']['id']]['count'] = $skus[$transaction['sku']['id']]['count'] + $transaction['quantity'];
+				$skus[$transaction['sku']['id']]['value'] = $skus[$transaction['sku']['id']]['value'] + $transaction['quantity'];
 			}
 		}
-		if(isset($skus))
-		foreach ($skus as $sku) {
-			$sku_count[] = ['label' => $sku['description'] . ($sku['count'] != 1 ? 's' : ''), 'value' => $sku['count']];
-		}
 
-		if (isset($sku_count))
-			return json_encode($sku_count);
+		if (isset($skus))
+			return json_encode(array_values($skus));
 	}
 
 }
