@@ -39,9 +39,6 @@
 		</li>
 		@endif
 		@if( $user->is_admin)
-		<li @if(strcmp($location, 'Admin Dashboard') == 0) class="active" @endif>
-			<a href="/account/admin/dashboard"> <i class="fa fa-dashboard"></i> <span>Admin Dashboard</span> <small class="badge pull-right bg-green">Admin</small></a> 
-		</li>
 		<li @if(strcmp($location, 'Stocktake') == 0) class="active" @endif>
 			<a href="/account/admin/stocktake"> <i class="fa fa-barcode"></i> <span>Stocktake</span> <small class="badge pull-right bg-green">Admin</small></a>
 		</li>		

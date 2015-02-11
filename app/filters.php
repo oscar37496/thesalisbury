@@ -12,6 +12,7 @@
  */
 
 App::before(function($request) {
+	setlocale(LC_MONETARY, "en_US.UTF-8");
 	if (App::environment('local')) {
 
 		/*
@@ -102,6 +103,14 @@ App::before(function($request) {
 
 	}
 
+	Facebook\FacebookSession::setDefaultApplication($_ENV['facebook_api_id'], $_ENV['facebook_api_secret']);
+	$data['id'] = Session::get('id');
+	$data['fb_session'] = Session::get('fb_session');
+	//$data['fb_user'] = Session::get('fbuser');
+	$data['logout_url'] = Session::get('logout_url');
+	$data['notifications'] = Notification::all();
+	$data['notifications'] -> load('user');
+	App::instance('request_data', $data);
 });
 
 App::after(function($request, $response) {

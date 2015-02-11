@@ -28,20 +28,20 @@ Route::group(array('prefix' => 'account/admin', 'before' => 'auth.admin'), funct
 	Route::get('/', function(){
 		return Redirect::to('/account/admin/dashboard');
 	});
-	Route::get('dashboard', 'AccountController@getSysadminDashboard');
+	//Route::get('dashboard', 'AccountController@getSysadminDashboard');
 	
-	Route::get('users', 'AccountController@getAdminUsers');
-	Route::get('users/{id}/{action}', 'AccountController@userAction');
+	Route::get('users', 'AdminController@getAdminUsers');
+	Route::get('users/{id}/{action}', 'AdminController@userAction');
 	
-	Route::get('notifications/{id}/{action}', 'AccountController@notificationAction');
+	Route::get('notifications/{id}/{action}', 'AdminController@notificationAction');
 	
-	Route::get('transactions', 'AccountController@getAdminTransactions');
+	Route::get('transactions', 'AdminController@getAdminTransactions');
 	
-	Route::get('cards', 'AccountController@getAdminCards');
-	Route::get('cards/{id}/{action}', 'AccountController@cardAction');
+	Route::get('cards', 'AdminController@getAdminCards');
+	Route::get('cards/{id}/{action}', 'AdminController@cardAction');
 	
-	Route::get('stocktake', 'AccountController@getAdminStocktake');
-	Route::get('stocktake/{id}/{volume}', 'AccountController@setStocktake');
+	Route::get('stocktake', 'AdminController@getAdminStocktake');
+	Route::get('stocktake/{id}/{volume}', 'Admin@setStocktake');
 
 });
 
@@ -49,30 +49,30 @@ Route::group(array('prefix' => 'account/sysadmin', 'before' => 'auth.sysadmin'),
 	Route::get('/', function(){
 		return Redirect::to('/account/sysadmin/dashboard');
 	});
-	Route::get('dashboard', 'AccountController@getSysadminDashboard');
-	Route::get('transactions', 'AccountController@getSysadminTransactions');
-	Route::get('transactions/{transactionid}/{userid}', 'AccountController@linkBankTransaction')->where('userid', '[0-9]+');
-	Route::get('transactions/{transactionid}/{type}', 'AccountController@setBankTransactionType')->where('type', '[A-Za-z]+');
-	Route::get('transactions/{transactionid}/{type}/{user}', 'AccountController@setBankTransactionPayoutType')->where('type', '[A-Za-z]+');
-	Route::post('transactions/upload', 'AccountController@uploadBankTransactions');
+	Route::get('dashboard', 'SysadminController@getSysadminDashboard');
+	Route::get('transactions', 'SysadminController@getSysadminTransactions');
+	Route::get('transactions/{transactionid}/{userid}', 'SysadminController@linkBankTransaction')->where('userid', '[0-9]+');
+	Route::get('transactions/{transactionid}/{type}', 'SysadminController@setBankTransactionType')->where('type', '[A-Za-z]+');
+	Route::get('transactions/{transactionid}/{type}/{user}', 'SysadminController@setBankTransactionPayoutType')->where('type', '[A-Za-z]+');
+	Route::post('transactions/upload', 'SysadminController@uploadBankTransactions');
 	
-	Route::get('cashtransactions', 'AccountController@getSysadminCashTransactions');
-	Route::get('cashtransactions/{transactionid}/{type}', 'AccountController@setCashTransactionType')->where('type', '[A-Za-z]+');
+	Route::get('cashtransactions', 'SysadminController@getSysadminCashTransactions');
+	Route::get('cashtransactions/{transactionid}/{type}', 'SysadminController@setCashTransactionType')->where('type', '[A-Za-z]+');
 	
-	Route::get('purchases', 'AccountController@getSysadminPurchases');
-	Route::get('purchases/bank/{id}/{transactionid}', 'AccountController@linkPurchaseBank');
-	Route::get('purchases/cash/{id}', 'AccountController@linkPurchaseCash');
+	Route::get('purchases', 'SysadminController@getSysadminPurchases');
+	Route::get('purchases/bank/{id}/{transactionid}', 'SysadminController@linkPurchaseBank');
+	Route::get('purchases/cash/{id}', 'SysadminController@linkPurchaseCash');
 	
-	Route::get('operations', 'AccountController@getSysadminOperations');
-	Route::get('operations/cash/{amount}', 'AccountController@updateCash');
-	Route::get('operations/credit/{user}/{amount}', 'AccountController@updateCredit');
-	Route::get('operations/purchase/{id}/{volume}/{cost}', 'AccountController@updatePurchase');
-	Route::get('operations/payout/{user}/{amount}', 'AccountController@setPayout');
+	Route::get('operations', 'SysadminController@getSysadminOperations');
+	Route::get('operations/cash/{amount}', 'SysadminController@updateCash');
+	Route::get('operations/credit/{user}/{amount}', 'SysadminController@updateCredit');
+	Route::get('operations/purchase/{id}/{volume}/{cost}', 'SysadminController@updatePurchase');
+	Route::get('operations/payout/{user}/{amount}', 'SysadminController@setPayout');
 });
 
 Route::group(array('prefix' => 'account/charles', 'before' => 'auth.charles'), function() {
-	Route::get('users', 'AccountController@getCharlesUsers');
-	Route::get('users/{id}', 'AccountController@updateLastMessaged');
+	Route::get('users', 'CharlesController@getCharlesUsers');
+	Route::get('users/{id}', 'CharlesController@updateLastMessaged');
 });
 
 Route::get('auth/fb', 'AuthController@authFacebook');

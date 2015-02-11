@@ -4,119 +4,258 @@ use Facebook\FacebookSession;
 use Facebook\FacebookRequest;
 use Facebook\GraphUser;
 
-class AccountController extends BaseController {
+class AdminController extends BaseController {
 
 	protected $layout = 'account.master';
-
-	//============================= Account Functions ===========================================
-	//==========================================================================================
-
-	public function getDashboard() {
-		$data = app('request_data');
-		$data['user'] = User::where('id', $data['id']) -> first();
-		$data['user'] -> load('transaction');
-
-		$data['sku_count'] = $this -> getSkuCount($data['user']);
-		$data['account_balance'] = $this -> getAccountBalanceTimeline($data['user']);
-
-		$friends =   (new FacebookRequest($data['fb_session'], 'GET', '/me/friends')) -> execute() -> getGraphObject(GraphUser::className()) -> asArray()['data'];
-		$data['friend_count'] = 0;
-		foreach($friends as $graph_user){
-			$friend = User::where('id', $graph_user->id) -> first();
-			if($friend['is_activated'] && $friend['is_social']){
-				$data['friend_count']++;
-			}
-		}	
-		$data['drink_count'] = DB::select('SELECT SUM(t.quantity*skus.standard_drinks) `total` FROM transactions AS t INNER JOIN skus ON t.sku_id = skus.id WHERE user_id = ?', array($data['user']->id))[0]->total / 100;
-		if(!isset($data['drink_count'])) $data['drink_count'] = 0;
-		
-		
-		$data['location'] = 'Dashboard';
-		$data['description'] = 'An overview of your account';
-
-		$this -> layout -> content = View::make('account.dashboard', $data);
-	}
-
-	public function getStatistics() {
-		$data = app('request_data');
-		$data['user'] = User::where('id', $data['id']) -> first();
-		$data['user'] -> load('transaction', 'transaction.sku', 'bankTransaction');
-
-		$data['sku_count'] = $this -> getSkuCount($data['user']);
-		$data['account_balance'] = $this -> getAccountBalanceTimeline($data['user']);
-		
-
-		$data['location'] = 'Statistics';
-		$data['description'] = 'Analysis of what you\'ve bought';
-		$this -> layout -> content = View::make('account.statistics', $data);
-	}
-
-	public function getTransactions() {
-		$data = app('request_data');
-		$data['user'] = User::where('id', $data['id']) -> first();
-		$data['user'] -> load('transaction', 'transaction.tag', 'transaction.sku', 'bankTransaction', 'cashTransaction');
-		
-		$data['transactions'] = DB::select("SELECT t.timestamp, tags.description AS tag_description, skus.description AS sku_description, t.price, t.quantity, (-t.quantity*t.price) AS total, 0 AS balance FROM transactions AS t
-				INNER JOIN skus ON t.sku_id = skus.id
-				LEFT JOIN tags ON t.tag_id = tags.id
-				WHERE t.user_id = ?
-			UNION ALL SELECT date, 'Bank Transaction', 'Credit Added', amount, 1, amount, 0 FROM bank_transactions WHERE user_id = ? 
-			UNION ALL SELECT timestamp, 'Bank Transaction', 'Credit Added', amount, 1, amount, 0 FROM cash_transactions WHERE user_id = ?
-			ORDER BY timestamp", array($data['user']->id, $data['user']->id, $data['user']->id));
-		$balance = 0;
-		foreach($data['transactions'] as $transaction){
-			$transaction->balance = ($balance += $transaction->total);
-		}
-		$data['location'] = 'Transactions';
-		$data['description'] = 'A list of all your purchases';
-		$this -> layout -> content = View::make('account.transactions', $data);
-	}
-
-	public function getCards() {
-		$data = app('request_data');
-		$data['user'] = User::where('id', $data['id']) -> first();
-		$data['user'] -> load('transaction', 'transaction.tag', 'tag');
-		
-		$data['tags'] = DB::select("(SELECT tags.id, tags.description, tags.is_activated, COUNT(t.quantity) AS transaction_count, SUM(t.quantity) AS drink_count, SUM(t.price*t.quantity) AS total FROM tags 
-		LEFT JOIN transactions AS t ON tags.id = t.tag_id WHERE tags.user_id = ?)
-		UNION
-		(SELECT NULL, 'Manual Transaction', NULL, COUNT(quantity), SUM(quantity), SUM(price*quantity) FROM transactions WHERE user_id = ? AND tag_id IS NULL)", array($data['user']->id, $data['user']->id));
-		$data['location'] = 'Cards';
-		$data['description'] = 'All the cards linked to your account';
-		$this -> layout -> content = View::make('account.cards', $data);
-	}
-
-	public function getFriends() {
 	
-    	$data = app('request_data');
+	//========================== Begin Admin Pages ==========================================
+	//=======================================================================================
+	
+	public function getAdminStocktake() {
+		$data = app('request_data');
 		$data['user'] = User::where('id', $data['id']) -> first();
-		if( (!$data['user']->is_social) && (!$data['user']->is_admin))
-			return Redirect::to('/account/dashboard');
+		$data['location'] = 'Stocktake';
+		$data['description'] = 'Take inventory of all stock';
 		
-		$data['location'] = 'Friends';
-		$data['description'] = 'Your friends that have Salisbury Tabs';
-		
-		$friends =   (new FacebookRequest($data['fb_session'], 'GET', '/me/friends')) -> execute() -> getGraphObject(GraphUser::className()) -> asArray()['data'];
-		foreach($friends as $graph_user){
-			$user = User::where('id', $graph_user->id) -> first();
-			if($user['is_activated'] && $user['is_social']){
-				$friend['first_name'] = $user['first_name'];
-				$friend['last_name'] = $user['last_name'];
-				$friend['balance'] = $user['balance'];
-				
-				$friend['total_spent'] = DB::select('SELECT SUM(price * quantity) `total` FROM transactions WHERE user_id = ? AND sku_id <> 0', array($user['id']))[0]->total;
-				$friend['total_spent_last_week'] = DB::select('SELECT SUM(price * quantity) `total` FROM transactions WHERE user_id = ? AND sku_id <> 0 AND timestamp >= FROM_UNIXTIME(?)', array($user['id'], time() - (7 * 24 * 60 * 60) ))[0]->total;
-				$data['friends'][$user['id']] = $friend;
+		$data['ingredients'] = Ingredient::all();
+		$this -> layout -> content = View::make('admin.stocktake', $data);
+	}
+
+	public function getAdminTransactions() {
+		$data = app('request_data');
+		$data['user'] = User::where('id', $data['id']) -> first();
+		$data['location'] = 'All Transactions';
+		$data['description'] = 'A list of all transactions';
+		$data['transactions'] = Transaction::all();
+		$data['transactions'] -> load('user', 'sku');
+		$this -> layout -> content = View::make('admin.transactions', $data);
+	}
+
+	public function getAdminCards() {
+		$data = app('request_data');
+		$data['user'] = User::where('id', $data['id']) -> first();
+		$tags = Tag::all();
+		$tags -> load('user');
+		foreach ($tags as $tag) {
+			$id = $tag['id'];
+			$data['tags'][$id] = $tag;
+			$data['tags'][$id]['count'] = 0;
+			$data['tags'][$id]['total'] = 0;
+		}
+		$data['tags']['manual']['count'] = 0;
+		$data['tags']['manual']['total'] = 0;
+		$transactions = Transaction::all();
+		foreach ($transactions as $transaction) {
+			if ($transaction['sku_id'] != 0) {
+				if (!isset($transaction['tag_id'])) {
+					$transaction['tag_id'] = 'manual';
+				}
+				$data['tags'][$transaction['tag_id']]['count'] += $transaction['quantity'];
+				$data['tags'][$transaction['tag_id']]['total'] += $transaction['quantity'] * $transaction['price'];
 			}
-		}		
-		
-		$this -> layout -> content = View::make('account.friends', $data);
+		}
+		$data['location'] = 'All Cards';
+		$data['description'] = 'All the cards linked to Salisbury Tabs';
+		$this -> layout -> content = View::make('admin.cards', $data);
+	}
+
+	public function getAdminUsers() {
+
+		$data = app('request_data');
+		$data['user'] = User::where('id', $data['id']) -> first();
+
+		$data['location'] = 'All Users';
+		$data['description'] = 'All users with an account';
+
+		$users = User::all();
+		foreach ($users as $user) {
+			if ($user['is_activated']) {
+				$friend['is_activated'] = TRUE;
+			} else {
+				$friend['is_activated'] = FALSE;
+			}
+			if ($user['is_social']) {
+				$friend['is_social'] = TRUE;
+			} else {
+				$friend['is_social'] = FALSE;
+			}
+			$friend['first_name'] = $user['first_name'];
+			$friend['middle_name'] = $user['middle_name'];
+			$friend['last_name'] = $user['last_name'];
+			$friend['balance'] = $user['balance'];
+
+			$friend['total_spent'] = DB::select('SELECT SUM(price * quantity) `total` FROM transactions WHERE user_id = ? AND sku_id <> 0', array($user['id']))[0] -> total;
+			$friend['total_spent_last_week'] = DB::select('SELECT SUM(price * quantity) `total` FROM transactions WHERE user_id = ? AND sku_id <> 0 AND timestamp >= FROM_UNIXTIME(?)', array($user['id'], time() - (7 * 24 * 60 * 60)))[0] -> total;
+			$data['users'][$user['id']] = $friend;
+
+		}
+
+		$this -> layout -> content = View::make('admin.users', $data);
 
 	}
 
+	//============================ Admin AJAX Functions ======================================
+	//========================================================================================
 
+	public function setStocktake($id, $volume){
+		$stocktake = new Stocktake();
+		$stocktake -> ingredient_id = $id;
+		$stocktake -> volume = $volume;
+		$stocktake -> save();
+		return $volume.'ml';
+	}
+	
+	public function cardAction($id, $action) {
+		setlocale(LC_MONETARY, "en_US.UTF-8");
+		if (strcmp($action, "activate") == 0) {
+			$is_activated = TRUE;
+		} else if (strcmp($action, "deactivate") == 0) {
+			$is_activated = FALSE;
+		} else {
+			return App::abort();
+		}
+		$tag = Tag::where('id', $id) -> first();
+		if (isset($tag)) {
+			$tag['is_activated'] = $is_activated;
+			$tag -> save();
+			$data['tag'] = $tag;
+			return View::make('admin.ajax.cards', $data);
+		}
+		return App::abort();
+	}
+
+	public function userAction($id, $action) {
+		setlocale(LC_MONETARY, "en_US.UTF-8");
+		if (strcmp($action, "activate") == 0) {
+			return $this -> setUserActivation($id, TRUE);
+		} else if (strcmp($action, "deactivate") == 0) {
+			return $this -> setUserActivation($id, FALSE);
+		} else if (strcmp($action, "make-social") == 0) {
+			return $this -> setUserSocial($id, TRUE);
+		} else if (strcmp($action, "remove-social") == 0) {
+			return $this -> setUserSocial($id, FALSE);
+		}
+		return App::abort();
+	}
+
+	public function notificationAction($id, $action) {
+		if (strcmp($action, "activate") == 0) {
+			$data['notification'] = Notification::where('id', $id) -> first();
+			$user = User::where('id', $data['notification']['user_id']) -> first();
+			$user -> is_activated = TRUE;
+			$user -> save();
+			$data['notification'] -> delete();
+			$data['clear'] = FALSE;
+			return View::make('admin.ajax.notifications', $data);
+		} else if (strcmp($action, "clear") == 0) {
+			DB::table('notifications') -> delete();
+			$data['clear'] = TRUE;
+			return View::make('admin.ajax.notifications', $data);
+		} else {
+			return App::abort();
+		}
+	}
+
+	private function setUserActivation($id, $is_activated) {
+		$user = User::where('id', $id) -> first();
+		if (isset($user)) {
+			$user['is_activated'] = $is_activated;
+			$user -> save();
+		}
+
+		$data['total_spent'] = DB::select('SELECT SUM(price * quantity) `total` FROM transactions WHERE user_id = ? AND sku_id <> 0', array($user['id']))[0] -> total;
+		$data['total_spent_last_week'] = DB::select('SELECT SUM(price * quantity) `total` FROM transactions WHERE user_id = ? AND sku_id <> 0 AND timestamp >= FROM_UNIXTIME(?)', array($user['id'], time() - (7 * 24 * 60 * 60)))[0] -> total;
+		$data['user'] = $user;
+
+		return View::make('admin.ajax.users', $data);
+	}
+
+	private function setUserSocial($id, $is_social) {
+		$user = User::where('id', $id) -> first();
+		if (isset($user)) {
+			$user['is_social'] = $is_social;
+			$user -> save();
+		}
+
+		$data['total_spent'] = DB::select('SELECT SUM(price * quantity) `total` FROM transactions WHERE user_id = ? AND sku_id <> 0', array($user['id']))[0] -> total;
+		$data['total_spent_last_week'] = DB::select('SELECT SUM(price * quantity) `total` FROM transactions WHERE user_id = ? AND sku_id <> 0 AND timestamp >= FROM_UNIXTIME(?)', array($user['id'], time() - (7 * 24 * 60 * 60)))[0] -> total;
+		$data['user'] = $user;
+
+		return View::make('admin.ajax.users', $data);
+	}
+
+	
 	//============================= Helper Functions ===========================================
 	//==========================================================================================
+	
+	private function getAssets(){
+		$tab_assets = - DB::select('SELECT SUM(balance) `total` FROM users WHERE balance < 0')[0]->total;
+		$bank_balance = ($t=BankTransaction::latest('date')->first())?$t->balance:0; 
+		//DB::select('SELECT balance FROM bank_transactions ORDER BY date DESC LIMIT 0, 1')[0]->balance;
+		$bank_balance = ($bank_balance > 0 ? $bank_balance : 0);
+		$cash = DB::select('SELECT SUM(amount) `total` FROM cash_transactions')[0]->total - DB::select("SELECT SUM(amount) `total` FROM bank_transactions WHERE app_type = 'CASHDEPOSIT'")[0]->total;
+		$stock_value = $this->getStockValue();
+		return $tab_assets + $bank_balance + $cash + $stock_value;
+	}
+	
+	private function getLiabilities(){
+		$tab_liabilities = DB::select('SELECT SUM(balance) `total` FROM users WHERE balance > 0')[0]->total;
+		$bank_balance = ($t=BankTransaction::latest('date')->first())?$t->balance:0;
+		$bank_balance = ($bank_balance < 0 ? -$bank_balance : 0);
+		return $tab_liabilities + $bank_balance;
+	}
+
+	private function getBankBalance(){
+		$bank_balance = ($t=BankTransaction::latest('date')->first())?$t->balance:0;
+		return $bank_balance;
+	}
+	
+	private function getCashOnHand(){
+		$bank_balance = ($t=BankTransaction::latest('date')->first())?$t->balance:0;
+		$bank_balance = $bank_balance > 0 ? $bank_balance : 0;
+		$cash = DB::select('SELECT SUM(amount) `total` FROM cash_transactions')[0]->total - DB::select("SELECT SUM(amount) `total` FROM bank_transactions WHERE app_type = 'CASHDEPOSIT'")[0]->total;
+		return $bank_balance + $cash;
+	}
+	
+	private function getStockValue(){
+		return $this->getStockValueByDate(time());
+	}
+
+	private function getStockValueByDate($time){
+		$stock_volumes = DB::select(
+			'SELECT t1.ingredient_id, t1.volume, t1.timestamp FROM stocktakes t1 WHERE t1.timestamp = (SELECT MAX(t2.timestamp) FROM stocktakes t2 WHERE t2.timestamp <= FROM_UNIXTIME(?) AND t2.ingredient_id = t1.ingredient_id)', array($time));
+		$stock_value = 0;
+		foreach($stock_volumes as $stock_volume){
+			$purchases = DB::select('SELECT volume, cost, timestamp FROM purchases WHERE ingredient_id = ? AND timestamp < FROM_UNIXTIME(?) ORDER BY timestamp DESC', array($stock_volume->ingredient_id, $time));
+			
+			if(isset($purchases[0])){
+				$j=0;
+				while(isset($purchases[$j]) && $purchases[$j]->timestamp > $stock_volume->timestamp){
+					//$stock_volume->volume += $purchases[$j]->volume;
+					$stock_value += $purchases[$j]->cost;
+					$j++;
+				}
+				
+				$volume_iterated = 0;
+				$i = 0;
+				$value = 0;
+				while(isset($purchases[$i]) && $volume_iterated <= $stock_volume->volume){
+					$volume_iterated += $purchases[$i]->volume;
+					$value += $purchases[$i]->cost;
+					$i++;
+				}
+				$value += - ($volume_iterated - $stock_volume->volume) * ($purchases[$i-1]->cost / $purchases[$i-1]->volume);
+				$stock_value += $value;
+			}
+		}
+		
+		return $stock_value;
+	}
+
+	private function getPayouts(){
+		return -DB::select("SELECT SUM(amount) `total` FROM bank_transactions WHERE app_type = 'PAYOUT'")[0]->total
+					-DB::select("SELECT SUM(amount) `total` FROM cash_transactions WHERE type = 'PAYOUT'")[0]->total;
+	}
 	
 	private function getProfitTimeline(){
 		//types :

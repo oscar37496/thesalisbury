@@ -37,9 +37,9 @@ class AuthController extends BaseController {
 			if ($user -> first() != NULL) {
 				if ($user -> first() -> is_activated) {
 					Session::put('fb_session', $session);
-					Session::put('fb_user', $me);
+					//Session::put('fb_user', $me);
 					Session::put('id', $id);
-					Session::put('user', $user -> first());
+					//Session::put('user', $user -> first());
 					return Redirect::to('account/dashboard/#');
 				} else {
 					Session::flush();
