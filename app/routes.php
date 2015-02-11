@@ -41,7 +41,7 @@ Route::group(array('prefix' => 'account/admin', 'before' => 'auth.admin'), funct
 	Route::get('cards/{id}/{action}', 'AdminController@cardAction');
 	
 	Route::get('stocktake', 'AdminController@getAdminStocktake');
-	Route::get('stocktake/{id}/{volume}', 'Admin@setStocktake');
+	Route::get('stocktake/{id}/{volume}', 'AdminController@setStocktake');
 
 });
 
