@@ -105,7 +105,7 @@ class SysadminController extends BaseController {
 		$difference = $amount-$current;
 		$transaction = new CashTransaction();
 		$transaction -> amount = $difference;
-		$transaction -> type = "CASHRECONCILIATION";
+		$transaction -> app_type = "CASHRECONCILIATION";
 		$transaction -> save();
 		return money_format('%n',$amount/100);
 	}
@@ -114,7 +114,7 @@ class SysadminController extends BaseController {
 		$t = new CashTransaction();
 		$t->user_id = $id;
 		$t->amount = $amount;
-		$t->type = 'TABCREDIT';
+		$t->app_type = 'TABCREDIT';
 		$t->save();
 		$user = User::where('id',$id)->first();
 		$user['balance'] += $amount;
@@ -176,7 +176,7 @@ class SysadminController extends BaseController {
 			$old_user -> save();
 			$t['user_id'] = NULL;
 		}	
-		$t['type'] = $type;
+		$t['app_type'] = $type;
 		
 		$t->save();
 		
@@ -198,8 +198,8 @@ class SysadminController extends BaseController {
 		if($purchase->cash_transaction_id!= NULL) CashTransaction::where('id', $purchase->cash_transaction_id)->delete();
 		$transaction = new CashTransaction();
 		$transaction->amount = -$purchase->cost;
-		$transaction->type = 'STOCKPURCHASE';
-		$transaction->description = $purchase->ingredient->name;
+		$transaction->app_type = 'STOCKPURCHASE';
+		$transaction->app_description = $purchase->ingredient->name;
 		$transaction->save();
 		$purchase->cash_transaction_id = $transaction->id;
 		$purchase->bank_transaction_id = NULL;
@@ -268,8 +268,8 @@ class SysadminController extends BaseController {
 		}else{
 			$t = new CashTransaction();
 			$t->amount = -$amount;
-			$t->type = 'PAYOUT';
-			$t->description = $user;
+			$t->app_type = 'PAYOUT';
+			$t->app_description = $user;
 			$t->save();
 			return money_format('%n',$amount/100).' was paid out to '.$user;
 		}
@@ -346,7 +346,7 @@ class SysadminController extends BaseController {
 
 	private function getPayouts(){
 		return -DB::select("SELECT SUM(amount) `total` FROM bank_transactions WHERE app_type = 'PAYOUT'")[0]->total
-					-DB::select("SELECT SUM(amount) `total` FROM cash_transactions WHERE type = 'PAYOUT'")[0]->total;
+					-DB::select("SELECT SUM(amount) `total` FROM cash_transactions WHERE app_type = 'PAYOUT'")[0]->total;
 	}
 	
 	private function getProfitTimeline(){
@@ -356,7 +356,7 @@ class SysadminController extends BaseController {
 		//purchase - 3
 		//stocktake - 4
 		//transaction - 5
-		$a = DB::select("SELECT 1 AS type, timestamp, amount, type AS transaction_type, NULL AS balance FROM cash_transactions UNION ALL
+		$a = DB::select("SELECT 1 AS type, timestamp, amount, app_type AS transaction_type, NULL AS balance FROM cash_transactions UNION ALL
 			SELECT 2, date, amount, app_type, balance FROM bank_transactions UNION ALL
 			SELECT 3, timestamp, 0, NULL, NULL FROM purchases UNION ALL
 			SELECT 4, timestamp, 0, NULL, NULL FROM stocktakes UNION ALL
