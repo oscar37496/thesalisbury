@@ -242,8 +242,8 @@ function setCredit($id, $amount){
                     data: {{ $profit_timeline or '[]'}},
                     smooth: false,
                     xkey: 'time',
-                    ykeys: ['assets', 'liabilities', 'payouts', 'profit'],
-                    labels: ['Assets', 'Liabilities', 'Payouts to Date', 'Profit to Date'],
+                    ykeys: ['equity', 'cash', 'payouts', 'profit'],
+                    labels: ['Equity', 'Cash on hand', 'Payouts to Date', 'Profit to Date'],
                     lineColors: ['#3c8dbc',"#f56954", "#00a65a",'#f39c12'],
                     hideHover: 'auto'
                 });

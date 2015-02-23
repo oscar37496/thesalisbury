@@ -101,22 +101,20 @@ class SysadminController extends BaseController {
 	//==========================================================================================
 
 	public function updateCash($amount){
-		setlocale(LC_MONETARY, "en_US.UTF-8");
 		$current = DB::select('SELECT SUM(amount) `total` FROM cash_transactions')[0]->total - DB::select("SELECT SUM(amount) `total` FROM bank_transactions WHERE app_type = 'CASHDEPOSIT'")[0]->total;
 		$difference = $amount-$current;
 		$transaction = new CashTransaction();
 		$transaction -> amount = $difference;
-		$transaction -> type = "CASHRECONCILIATION";
+		$transaction -> app_type = "CASHRECONCILIATION";
 		$transaction -> save();
 		return money_format('%n',$amount/100);
 	}
 
 	public function updateCredit($id, $amount){
-		setlocale(LC_MONETARY, "en_US.UTF-8");
 		$t = new CashTransaction();
 		$t->user_id = $id;
 		$t->amount = $amount;
-		$t->type = 'TABCREDIT';
+		$t->app_type = 'TABCREDIT';
 		$t->save();
 		$user = User::where('id',$id)->first();
 		$user['balance'] += $amount;
@@ -178,7 +176,7 @@ class SysadminController extends BaseController {
 			$old_user -> save();
 			$t['user_id'] = NULL;
 		}	
-		$t['type'] = $type;
+		$t['app_type'] = $type;
 		
 		$t->save();
 		
@@ -200,8 +198,8 @@ class SysadminController extends BaseController {
 		if($purchase->cash_transaction_id!= NULL) CashTransaction::where('id', $purchase->cash_transaction_id)->delete();
 		$transaction = new CashTransaction();
 		$transaction->amount = -$purchase->cost;
-		$transaction->type = 'STOCKPURCHASE';
-		$transaction->description = $purchase->ingredient->name;
+		$transaction->app_type = 'STOCKPURCHASE';
+		$transaction->app_description = $purchase->ingredient->name;
 		$transaction->save();
 		$purchase->cash_transaction_id = $transaction->id;
 		$purchase->bank_transaction_id = NULL;
@@ -243,6 +241,8 @@ class SysadminController extends BaseController {
 			$user['balance'] += $t['amount'];
 			$user->save();
 			$t['user_id'] = $userid;
+			$t['app_type'] = 'TABCREDIT';
+			
 		}else{
 			$t['user_id'] = NULL;
 		}
@@ -256,7 +256,6 @@ class SysadminController extends BaseController {
 	}
 
 	public function setPayout($user, $amount) {
-		setlocale(LC_MONETARY, "en_US.UTF-8");
 		if(strcmp($user,'all') == 0){
 			$this->setPayout('beniac',$amount);
 			$this->setPayout('bliss',$amount);
@@ -269,8 +268,8 @@ class SysadminController extends BaseController {
 		}else{
 			$t = new CashTransaction();
 			$t->amount = -$amount;
-			$t->type = 'PAYOUT';
-			$t->description = $user;
+			$t->app_type = 'PAYOUT';
+			$t->app_description = $user;
 			$t->save();
 			return money_format('%n',$amount/100).' was paid out to '.$user;
 		}
@@ -282,7 +281,7 @@ class SysadminController extends BaseController {
 	//==========================================================================================
 	
 	private function getAssets(){
-		$tab_assets = - DB::select('SELECT SUM(balance) `total` FROM users WHERE balance < 0')[0]->total;
+		$tab_assets = - DB::select('SELECT SUM(balance) `total` FROM users WHERE balance <= 0')[0]->total;
 		$bank_balance = ($t=BankTransaction::latest('date')->first())?$t->balance:0; 
 		//DB::select('SELECT balance FROM bank_transactions ORDER BY date DESC LIMIT 0, 1')[0]->balance;
 		$bank_balance = ($bank_balance > 0 ? $bank_balance : 0);
@@ -311,15 +310,15 @@ class SysadminController extends BaseController {
 	}
 	
 	private function getStockValue(){
-		return $this->getStockValueByDate(time());
+		return $this->getStockValueByDate(date("Y-m-d H:i:s"));
 	}
 
 	private function getStockValueByDate($time){
 		$stock_volumes = DB::select(
-			'SELECT t1.ingredient_id, t1.volume, t1.timestamp FROM stocktakes t1 WHERE t1.timestamp = (SELECT MAX(t2.timestamp) FROM stocktakes t2 WHERE t2.timestamp <= FROM_UNIXTIME(?) AND t2.ingredient_id = t1.ingredient_id)', array($time));
+			'SELECT t1.ingredient_id, t1.volume, t1.timestamp FROM stocktakes t1 WHERE t1.timestamp = (SELECT MAX(t2.timestamp) FROM stocktakes t2 WHERE t2.timestamp <= ? AND t2.ingredient_id = t1.ingredient_id)', array($time));
 		$stock_value = 0;
 		foreach($stock_volumes as $stock_volume){
-			$purchases = DB::select('SELECT volume, cost, timestamp FROM purchases WHERE ingredient_id = ? AND timestamp < FROM_UNIXTIME(?) ORDER BY timestamp DESC', array($stock_volume->ingredient_id, $time));
+			$purchases = DB::select('SELECT volume, cost, timestamp FROM purchases WHERE ingredient_id = ? AND timestamp < ? ORDER BY timestamp DESC', array($stock_volume->ingredient_id, $time));
 			
 			if(isset($purchases[0])){
 				$j=0;
@@ -347,7 +346,7 @@ class SysadminController extends BaseController {
 
 	private function getPayouts(){
 		return -DB::select("SELECT SUM(amount) `total` FROM bank_transactions WHERE app_type = 'PAYOUT'")[0]->total
-					-DB::select("SELECT SUM(amount) `total` FROM cash_transactions WHERE type = 'PAYOUT'")[0]->total;
+					-DB::select("SELECT SUM(amount) `total` FROM cash_transactions WHERE app_type = 'PAYOUT'")[0]->total;
 	}
 	
 	private function getProfitTimeline(){
@@ -357,138 +356,55 @@ class SysadminController extends BaseController {
 		//purchase - 3
 		//stocktake - 4
 		//transaction - 5
-		$a = array();
-		$ct = CashTransaction::all();
-		foreach ($ct as $c) {
-			$data['type'] = 1;
-			$data['value'] = $c;
-			$time = strtotime($c['timestamp']);
-			while(isset($a[$time])){
-				$time++;
-			}
-			$a[$time] = $data;
-		}
-		$bt = BankTransaction::all();
-		foreach ($bt as $c) {
-			$data['type'] = 2;
-			$data['value'] = $c;
-			$time = strtotime($c['date']);
-			while(isset($a[$time])){
-				$time++;
-			}
-			$a[$time] = $data;
-		}
-		$purchases = Purchase::all();
-		foreach ($purchases as $c) {
-			$data['type'] = 3;
-			$data['value'] = $c;
-			$time = strtotime($c['timestamp']);
-			while(isset($a[$time])){
-				$time++;
-			}
-			$a[$time] = $data;
-		}
-		$stocktakes = Stocktake::all();
-		foreach ($stocktakes as $c) {
-			$data['type'] = 4;
-			$data['value'] = $c;
-			$time = strtotime($c['timestamp']);
-			while(isset($a[$time])){
-				$time++;
-			}
-			$a[$time] = $data;
-		}
-		$transactions = Transaction::all();
-		foreach ($transactions as $c) {
-			$data['type'] = 5;
-			$data['value'] = $c;
-			$time = strtotime($c['timestamp']);
-			while(isset($a[$time])){
-				$time++;
-			}
-			$a[$time] = $data;
-		}
-		ksort($a);
+		$a = DB::select("SELECT 1 AS type, timestamp, amount, app_type AS transaction_type, NULL AS balance FROM cash_transactions UNION ALL
+			SELECT 2, date, amount, app_type, balance FROM bank_transactions UNION ALL
+			SELECT 3, timestamp, 0, NULL, NULL FROM purchases UNION ALL
+			SELECT 4, timestamp, 0, NULL, NULL FROM stocktakes UNION ALL
+			SELECT 5, timestamp, (quantity*price), NULL, NULL AS amount FROM transactions
+			ORDER BY timestamp");
+		
 		$payouts = 0;
 		$stock_value = 0;
 		$cash_balance = 0;
 		$bank_balance = 0;
-		$positive_tab_balance = 0;
-		$negative_tab_balance = 0;
+		$tab_assets = 0; //positive is asset, negative liability.
 		$output = array();
-		foreach ($a as $time => $c) {
-			switch ($c['type']) {
+		foreach ($a as $c) {
+			switch ($c->type) {
 			    case 1: //cash-transaction
-			    	if(strcmp($c['value']['type'], 'PAYOUT')==0){
-			    		$payouts += -$c['value']['amount'];
-			    	}elseif(strcmp($c['value']['type'], 'TABCREDIT')==0){
-			    		$balance = -DB::select("SELECT SUM(quantity*price) balance FROM transactions WHERE user_id=? AND timestamp <= ?",
-			    								 array($c['value']['user_id'], $c['value']['timestamp']))[0]->balance
-												 +DB::select("SELECT SUM(amount) balance FROM bank_transactions WHERE app_type='TABCREDIT' AND user_id=? AND date <= ?",
-			    								 array($c['value']['user_id'], $c['value']['timestamp']))[0]->balance
-												 +DB::select("SELECT SUM(amount) balance FROM cash_transactions WHERE type='TABCREDIT' AND user_id=? AND timestamp <= ?",
-			    								 array($c['value']['user_id'], $c['value']['timestamp']))[0]->balance;
-						if($c['value']['amount']>0){
-			    			$positive_tab_balance += ($balance+$c['value']['amount'])<0 ? 0 : ( ($balance<0) ? $balance+$c['value']['amount'] : $c['value']['amount'] );
-			    			$negative_tab_balance += ($balance+$c['value']['amount'])<0 ? -$c['value']['amount'] : ( ($balance<0) ? -($balance) : 0 );
-						}else{
-							$positive_tab_balance += ($balance+$c['value']['amount'])>0 ? $c['value']['amount'] : ( ($balance>0) ? -($balance) : 0 );
-			    			$negative_tab_balance += ($balance+$c['value']['amount'])>0 ? 0 : ( ($balance>0) ? -($balance+$c['value']['amount']) : -$c['value']['amount'] );
-						}
-					}elseif(strcmp($c['value']['type'], 'PURCHASE')==0){
-			    		$stock_value += -$c['value']['amount'];
+			    	if( $c->transaction_type === 'PAYOUT' ){
+			    		$payouts += -$c->amount;
+			    	}elseif(strcmp($c->transaction_type, 'TABCREDIT')==0){
+			    		$tab_assets -= $c->amount;
+					}elseif($c->transaction_type === 'PURCHASE'){
+			    		$stock_value -= $c->amount;
 			    	}
-			        $cash_balance += $c['value']['amount'];
+			        $cash_balance += $c->amount;
 			        break;
 			    case 2: //bank-transaction
-			    	if(strcmp($c['value']['app_type'], 'CASHDEPOSIT') == 0) $cash_balance += -$c['value']['amount'];
-					if(strcmp($c['value']['app_type'], 'PURCHASE') == 0) $stock_value += -$c['value']['amount'];
-					if(strcmp($c['value']['app_type'], 'PAYOUT') == 0) $payouts += -$c['value']['amount'];
-					if(strcmp($c['value']['app_type'], 'TABCREDIT') == 0) {
-						$balance = -DB::select("SELECT SUM(quantity*price) balance FROM transactions WHERE user_id=? AND timestamp <= ?",
-			    								 array($c['value']['user_id'], $c['value']['timestamp']))[0]->balance
-												 +DB::select("SELECT SUM(amount) balance FROM bank_transactions WHERE app_type='TABCREDIT' AND user_id=? AND date <= ?",
-			    								 array($c['value']['user_id'], $c['value']['timestamp']))[0]->balance
-												 +DB::select("SELECT SUM(amount) balance FROM cash_transactions WHERE type='TABCREDIT' AND user_id=? AND timestamp <= ?",
-			    								 array($c['value']['user_id'], $c['value']['timestamp']))[0]->balance;
-						if($c['value']['amount']>0){
-			    			$positive_tab_balance += ($balance+$c['value']['amount'])<0 ? 0 : ( ($balance<0) ? $balance+$c['value']['amount'] : $c['value']['amount'] );
-			    			$negative_tab_balance += ($balance+$c['value']['amount'])<0 ? -$c['value']['amount'] : ( ($balance<0) ? -($balance) : 0 );
-						}else{
-							$positive_tab_balance += ($balance+$c['value']['amount'])>0 ? $c['value']['amount'] : ( ($balance>0) ? -($balance) : 0 );
-			    			$negative_tab_balance += ($balance+$c['value']['amount'])>0 ? 0 : ( ($balance>0) ? -($balance+$c['value']['amount']) : -$c['value']['amount'] );
-						}
-					}
-			        $bank_balance = $c['value']['balance'];
+			    	if( $c->transaction_type === 'CASHDEPOSIT' ) $cash_balance -= $c->amount;
+					if( $c->transaction_type === 'PURCHASE' ) $stock_value -= $c->amount;
+					if( $c->transaction_type === 'PAYOUT' ) $payouts -= $c->amount;
+					if( $c->transaction_type === 'TABCREDIT' ) $tab_assets -= $c->amount;
+			        $bank_balance = $c->balance;
 			        break;
 				case 3: //purchase
-			      	$stock_value = $this->getStockValueByDate(strtotime($c['value']['timestamp']));
-			        break;
+					$stock_value = $this->getStockValueByDate($c->timestamp);
+					break;
 				case 4: //stocktake
-			      	$stock_value = $this->getStockValueByDate(strtotime($c['value']['timestamp']));
+			      	$stock_value = $this->getStockValueByDate($c->timestamp);
 			        break;
 				case 5: //transaction
-			        $balance = -DB::select("SELECT SUM(quantity*price) balance FROM transactions WHERE user_id=? AND timestamp <= ?",
-		    								 array($c['value']['user_id'], $c['value']['timestamp']))[0]->balance
-											 +DB::select("SELECT SUM(amount) balance FROM bank_transactions WHERE app_type='TABCREDIT' AND user_id=? AND date <= ?",
-		    								 array($c['value']['user_id'], $c['value']['timestamp']))[0]->balance
-											 +DB::select("SELECT SUM(amount) balance FROM cash_transactions WHERE type='TABCREDIT' AND user_id=? AND timestamp <= ?",
-		    								 array($c['value']['user_id'], $c['value']['timestamp']))[0]->balance;
-					if(-$c['value']['quantity']*$c['value']['price']>0){
-		    			$positive_tab_balance += ($balance-$c['value']['quantity']*$c['value']['price'])<0 ? 0 : ( ($balance<0) ? $balance-$c['value']['quantity']*$c['value']['price'] : -$c['value']['quantity']*$c['value']['price'] );
-		    			$negative_tab_balance += ($balance-$c['value']['quantity']*$c['value']['price'])<0 ? $c['value']['quantity']*$c['value']['price'] : ( ($balance<0) ? -($balance) : 0 );
-					}else{
-						$positive_tab_balance += ($balance-$c['value']['quantity']*$c['value']['price'])>0 ? -$c['value']['quantity']*$c['value']['price'] : ( ($balance>0) ? -($balance) : 0 );
-		    			$negative_tab_balance += ($balance-$c['value']['quantity']*$c['value']['price'])>0 ? 0 : ( ($balance>0) ? -($balance-$c['value']['quantity']*$c['value']['price']) : +$c['value']['quantity']*$c['value']['price'] );
-					}
+			        $tab_assets += $c->amount;
 			        break;
 			}
-			$output[] = ['time' => date('c',$time), 
-						'assets' => ($stock_value + $cash_balance + ($bank_balance>0 ? $bank_balance : 0) + $negative_tab_balance) / 100, 
-						'liabilities' => (($bank_balance<0 ? -$bank_balance : 0) + $positive_tab_balance) / 100,
+			$output[] = ['time' => date('c', strtotime($c->timestamp)), 
+						'equity' => ($stock_value + $cash_balance + $bank_balance + $tab_assets) / 100, 
+						'cash' => ( ($bank_balance>0)?$bank_balance:0 + ($cash_balance>0)?$cash_balance:0 ) / 100,
 						'payouts' => $payouts/100,
-						'profit' => ($payouts + $stock_value + $cash_balance + $bank_balance + $negative_tab_balance - $positive_tab_balance)/100];
+						'profit' => ($payouts + $stock_value + $cash_balance + $bank_balance + $tab_assets)/100];
 		}
+		//dd($stock_value);
 		if(isset($output))
 			return json_encode($output);
 		
