@@ -144,7 +144,7 @@ class AdminController extends BaseController {
 			$user = User::where('id', $data['notification']['user_id']) -> first();
 			$user -> is_activated = TRUE;
 			$user -> save();
-			$data['notification'] -> delete();
+			Notification::where('id', $id) -> delete();
 			$data['clear'] = FALSE;
 			return View::make('admin.ajax.notifications', $data);
 		} else if ($action === "clear") {
