@@ -139,7 +139,7 @@ class AdminController extends BaseController {
 	}
 
 	public function notificationAction($id, $action) {
-		if (strcmp($action, "activate") == 0) {
+		if ($action === "activate") {
 			$data['notification'] = Notification::where('id', $id) -> first();
 			$user = User::where('id', $data['notification']['user_id']) -> first();
 			$user -> is_activated = TRUE;
@@ -147,7 +147,7 @@ class AdminController extends BaseController {
 			$data['notification'] -> delete();
 			$data['clear'] = FALSE;
 			return View::make('admin.ajax.notifications', $data);
-		} else if (strcmp($action, "clear") == 0) {
+		} else if ($action === "clear") {
 			DB::table('notifications') -> delete();
 			$data['clear'] = TRUE;
 			return View::make('admin.ajax.notifications', $data);
