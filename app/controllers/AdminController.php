@@ -152,6 +152,7 @@ class AdminController extends BaseController {
 			$data['clear'] = TRUE;
 			return View::make('admin.ajax.notifications', $data);
 		} else {
+			dd($action);
 			return App::abort();
 		}
 	}

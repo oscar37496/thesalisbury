@@ -195,11 +195,11 @@
                             </div>
                             <div class="timeline-panel">
                                 <div class="timeline-heading">
-                                    <h4>1989-2011</h4>
-                                    <h4 class="subheading">Our Humble Beginnings</h4>
+                                    <h4>1921</h4>
+                                    <h4 class="subheading">A Legend Enters College</h4>
                                 </div>
                                 <div class="timeline-body">
-                                    <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p>
+                                    <p class="text-muted">The Salisbury Bar is named after Charles Victor Salisbury. Charles was resident in St. Paul's College between 1921 and 1927. Charles died in College on 26 February 1987. Charles made significant contributions to the College, both during his life and, following his death, through the substantial bequest to the College which allowed the College to build the bar which carries his name.</p>
                                 </div>
                             </div>
                         </li>
@@ -209,11 +209,11 @@
                             </div>
                             <div class="timeline-panel">
                                 <div class="timeline-heading">
-                                    <h4>March 2011</h4>
-                                    <h4 class="subheading">An Agency is Born</h4>
+                                    <h4>1990</h4>
+                                    <h4 class="subheading">The Bar is Opened</h4>
                                 </div>
                                 <div class="timeline-body">
-                                    <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p>
+                                    <p class="text-muted">The Salisbury began its existence on 22 February 1990, and enjoyed a very successful year attracting huge patronage from the surrounding Colleges and University students, which since has continued.</p>
                                 </div>
                             </div>
                         </li>
@@ -223,11 +223,11 @@
                             </div>
                             <div class="timeline-panel">
                                 <div class="timeline-heading">
-                                    <h4>December 2012</h4>
-                                    <h4 class="subheading">Transition to Full Service</h4>
+                                    <h4>1990-2015</h4>
+                                    <h4 class="subheading">A Bar Run for the Students</h4>
                                 </div>
                                 <div class="timeline-body">
-                                    <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p>
+                                    <p class="text-muted">The Salisbury Bar is foremost a student's bar, run and enjoyed by St Paul's students and their guests. It functions as the social heart of the College and is open and to be enjoyed by all men of the College.</p>
                                 </div>
                             </div>
                         </li>
@@ -237,19 +237,19 @@
                             </div>
                             <div class="timeline-panel">
                                 <div class="timeline-heading">
-                                    <h4>July 2014</h4>
-                                    <h4 class="subheading">Phase Two Expansion</h4>
+                                    <h4>2015</h4>
+                                    <h4 class="subheading">Looking to the Future</h4>
                                 </div>
                                 <div class="timeline-body">
-                                    <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p>
+                                    <p class="text-muted">The 2015 Syndicate, working on contributions made by the previous years, have overseen the reconstruction of the bar area that will preserve The Salisbury's place as the foremost Student Bar for years to come. Thus keeping Charles's legacy intact for the future generations of Paulines.</p>
                                 </div>
                             </div>
                         </li>
                         <li class="timeline-inverted">
                             <div class="timeline-image">
                                 <h4>Be Part
-                                    <br>Of Our
-                                    <br>Story!</h4>
+                                    <br>Of The
+                                    <br>Legacy</h4>
                             </div>
                         </li>
                     </ul>
@@ -264,7 +264,6 @@
             <div class="row">
                 <div class="col-lg-12 text-center">
                     <h2 class="section-heading">The 2015 Syndicate</h2>
-                    <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3>
                 </div>
             </div>
             <div class="row">
@@ -272,109 +271,63 @@
                     <div class="team-member">
                         <img src="https://graph.facebook.com/v2.2/743762199/picture?height=180&amp;width=180" class="img-responsive img-circle" alt="">
                         <h4>Alex Brand</h4>
-                        <p class="text-muted">Lead Designer</p>
-                        <ul class="list-inline social-buttons">
+                        <p class="text-muted">Juris Doctor</p>
+                       <!-- <ul class="list-inline social-buttons">
                             <li><a href="#"><i class="fa fa-facebook"></i></a>
                             </li>
                             <li><a href="#"><i class="fa fa-linkedin"></i></a>
                             </li>
-                        </ul>
+                        </ul>-->
                     </div>
                 </div>
                 <div class="col-sm-4">
                     <div class="team-member">
                         <img src="https://graph.facebook.com/v2.2/825565178/picture?height=180&amp;width=180" class="img-responsive img-circle" alt="">
                         <h4>Daniel Straton</h4>
-                        <p class="text-muted">Lead Marketer</p>
-                        <ul class="list-inline social-buttons">
-                            <li><a href="#"><i class="fa fa-twitter"></i></a>
-                            </li>
-                            <li><a href="#"><i class="fa fa-facebook"></i></a>
-                            </li>
-                            <li><a href="#"><i class="fa fa-linkedin"></i></a>
-                            </li>
-                        </ul>
+                        <p class="text-muted">Bachelor of Civil Engineering/Bachelor of Commerce</p>
                     </div>
                 </div>
                 <div class="col-sm-4">
                     <div class="team-member">
                         <img src="https://graph.facebook.com/v2.2/560298673/picture?height=180&amp;width=180" class="img-responsive img-circle" alt="">
                         <h4>George Beniac</h4>
-                        <p class="text-muted">Lead Developer</p>
-                        <ul class="list-inline social-buttons">
-                            <li><a href="#"><i class="fa fa-twitter"></i></a>
-                            </li>
-                            <li><a href="#"><i class="fa fa-facebook"></i></a>
-                            </li>
-                            <li><a href="#"><i class="fa fa-linkedin"></i></a>
-                            </li>
-                        </ul>
+                        <p class="text-muted">Bachelor of Commerce</p>
                     </div>
                 </div>
                 <div class="col-sm-4">
                     <div class="team-member">
                         <img src="https://graph.facebook.com/v2.2/784987855/picture?height=180&amp;width=180" class="img-responsive img-circle" alt="">
                         <h4>Jack Bliss</h4>
-                        <p class="text-muted">Lead Developer</p>
-                        <ul class="list-inline social-buttons">
-                            <li><a href="#"><i class="fa fa-twitter"></i></a>
-                            </li>
-                            <li><a href="#"><i class="fa fa-facebook"></i></a>
-                            </li>
-                            <li><a href="#"><i class="fa fa-linkedin"></i></a>
-                            </li>
-                        </ul>
+                        <p class="text-muted">Bachelor of Arts</p>
                     </div>
                 </div>
                 <div class="col-sm-4">
                     <div class="team-member">
                         <img src="https://graph.facebook.com/v2.2/543809016/picture?height=180&amp;width=180" class="img-responsive img-circle" alt="">
                         <h4>Lachlan Pullar</h4>
-                        <p class="text-muted">Lead Developer</p>
-                        <ul class="list-inline social-buttons">
-                            <li><a href="#"><i class="fa fa-twitter"></i></a>
-                            </li>
-                            <li><a href="#"><i class="fa fa-facebook"></i></a>
-                            </li>
-                            <li><a href="#"><i class="fa fa-linkedin"></i></a>
-                            </li>
-                        </ul>
+                        <p class="text-muted">Bachelor of Commerce</p>
                     </div>
                 </div>
                 <div class="col-sm-4">
                     <div class="team-member">
                         <img src="https://graph.facebook.com/v2.2/1186296357/picture?height=180&amp;width=180" class="img-responsive img-circle" alt="">
                         <h4>Oscar McNulty</h4>
-                        <p class="text-muted">Lead Developer</p>
-                        <ul class="list-inline social-buttons">
-                            <li><a href="#"><i class="fa fa-twitter"></i></a>
-                            </li>
-                            <li><a href="#"><i class="fa fa-facebook"></i></a>
-                            </li>
-                            <li><a href="#"><i class="fa fa-linkedin"></i></a>
-                            </li>
-                        </ul>
+                        <p class="text-muted">Bachelor of Aerospace Engineering/Bachelor of Science</p>
                     </div>
                 </div>
                 <div class="col-sm-4">
                     <div class="team-member">
                         <img src="https://graph.facebook.com/v2.2/653796752/picture?height=180&amp;width=180" class="img-responsive img-circle" alt="">
                         <h4>Rob Morris</h4>
-                        <p class="text-muted">Lead Developer</p>
-                        <ul class="list-inline social-buttons">
-                            <li><a href="#"><i class="fa fa-facebook"></i></a>
-                            </li>
-                            <li><a href="#"><i class="fa fa-linkedin"></i></a>
-                            </li>
-                        </ul>
+                        <p class="text-muted">Juris Doctor</p>
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <!-- <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 text-center">
                     <p class="large text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut eaque, laboriosam veritatis, quos non quis ad perspiciatis, totam corporis ea, alias ut unde.</p>
                 </div>
-            </div>
+            </div> -->
         </div>
     </section>
 
