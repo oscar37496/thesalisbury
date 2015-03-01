@@ -34,7 +34,7 @@ class SysadminController extends BaseController {
 		$data ['user'] = User::where ( 'id', $data ['id'] )->first ();
 		$data ['user']->load ( 'transaction', 'transaction.sku', 'bankTransaction' );
 		
-		$data ['users'] = User::all ();
+		$data ['users'] = User::all ()->sortBy ( 'first_name' );
 		$data ['ingredients'] = Ingredient::all ();
 		
 		$data ['location'] = 'Operations';

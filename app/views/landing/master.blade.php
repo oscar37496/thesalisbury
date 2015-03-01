@@ -291,7 +291,7 @@
                     <div class="team-member">
                         <img src="https://graph.facebook.com/v2.2/560298673/picture?height=180&amp;width=180" class="img-responsive img-circle" alt="">
                         <h4>George Beniac</h4>
-                        <p class="text-muted">Bachelor of Commerce</p>
+                        <p class="text-muted">Bachelor of Economics</p>
                     </div>
                 </div>
                 <div class="col-sm-4">
