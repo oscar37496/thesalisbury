@@ -35,8 +35,10 @@
 									<td>{{{ $transaction -> app_type }}}</td>
 									<td>{{{ $transaction -> description }}}</td>
 									<td id="{{{ $transaction->id }}}">
-										@if(strcmp('CASHDEPOSIT', $transaction->app_type) != 0)
-											@if( isset($transaction -> user))
+										@if('CASHDEPOSIT' !== $transaction->app_type )
+											@if( 'PAYOUT' === $transaction->app_type )
+												{{{ $transaction -> app_description }}}
+											@elseif( isset($transaction -> user))
 												{{{ $transaction -> user -> first_name . ' ' . $transaction -> user -> last_name }}} 
 											@elseif (isset($transaction -> purchase))
 												@foreach($transaction -> purchase as $purchase)
