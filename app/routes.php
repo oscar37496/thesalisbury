@@ -64,6 +64,7 @@ Route::group(array('prefix' => 'account/sysadmin', 'before' => 'auth.sysadmin'),
 	Route::get('purchases/cash/{id}', 'SysadminController@linkPurchaseCash');
 	
 	Route::get('operations', 'SysadminController@getSysadminOperations');
+	Route::get('operations/csv', 'SysAdminController@getCSV');
 	Route::get('operations/cash/{amount}', 'SysadminController@updateCash');
 	Route::get('operations/credit/{user}/{amount}', 'SysadminController@updateCredit');
 	Route::get('operations/purchase/{id}/{volume}/{cost}', 'SysadminController@updatePurchase');

@@ -50,6 +50,7 @@ function setPurchase(id, volume, cost){
                     {{ Form::submit('Upload') }}
                 </div><!-- /.box-body -->
 				{{ Form::close() }}
+				<a href="/account/sysadmin/operations/csv">Download Transactions</a>
             </div><!-- /.box -->
             
             <div class="box box-danger">

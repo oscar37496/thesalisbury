@@ -37,12 +37,23 @@ class SysadminController extends BaseController {
 		$data ['users'] = User::all ()->sortBy ( 'first_name' );
 		$data ['ingredients'] = Ingredient::all ();
 		
-		$boys = array('beniac', 'bliss', 'brand', 'mcnulty', 'morris', 'pullar', 'straton');
+		$boys = array (
+				'beniac',
+				'bliss',
+				'brand',
+				'mcnulty',
+				'morris',
+				'pullar',
+				'straton' 
+		);
 		
-		foreach ($boys as $lad){
-			$data ['payouts'][$lad] = -DB::select( 'SELECT SUM(amount) `total` FROM cash_transactions WHERE app_type = \'PAYOUT\' AND app_description = ?', array($lad) )[0]->total/100 - DB::select ( "SELECT SUM(amount) `total` FROM bank_transactions WHERE app_type = 'PAYOUT' AND app_description = ?", array($lad) )[0]->total/100;
+		foreach ( $boys as $lad ) {
+			$data ['payouts'] [$lad] = - DB::select ( 'SELECT SUM(amount) `total` FROM cash_transactions WHERE app_type = \'PAYOUT\' AND app_description = ?', array (
+					$lad 
+			) )[0]->total / 100 - DB::select ( "SELECT SUM(amount) `total` FROM bank_transactions WHERE app_type = 'PAYOUT' AND app_description = ?", array (
+					$lad 
+			) )[0]->total / 100;
 		}
-		
 		
 		$data ['location'] = 'Operations';
 		$data ['description'] = 'Admin Operations';
@@ -89,6 +100,114 @@ class SysadminController extends BaseController {
 		}
 		
 		$this->layout->content = View::make ( 'sysadmin.cashtransactions', $data );
+	}
+	public function getCSV() {
+		
+		// types :
+		// cash - 1
+		// bank - 2
+		// purchase - 3
+		// stocktake - 4
+		// transaction - 5
+		$a = DB::select ( "SELECT 1 AS type, timestamp, amount, app_type AS transaction_type, NULL AS balance FROM cash_transactions UNION ALL
+			SELECT 2, date, amount, app_type, balance FROM bank_transactions UNION ALL
+			SELECT 3, timestamp, 0, NULL, NULL FROM purchases UNION ALL
+			SELECT 4, timestamp, 0, NULL, NULL FROM stocktakes UNION ALL
+			SELECT 5, timestamp, (quantity*price), NULL, NULL AS amount FROM transactions
+			ORDER BY timestamp" );
+		
+		$payouts = 0;
+		$stock_value = 0;
+		$cash_balance = 0;
+		$bank_balance = 0;
+		$tab_assets = 0; // positive is asset, negative liability.
+		$output = array ();
+		foreach ( $a as $c ) {
+			switch ($c->type) {
+				case 1 : // cash-transaction
+					if ($c->transaction_type === 'PAYOUT') {
+						$payouts += - $c->amount;
+					} elseif (strcmp ( $c->transaction_type, 'TABCREDIT' ) == 0) {
+						$tab_assets -= $c->amount;
+					} elseif ($c->transaction_type === 'PURCHASE') {
+						$stock_value -= $c->amount;
+					}
+					$cash_balance += $c->amount;
+					break;
+				case 2 : // bank-transaction
+					if ($c->transaction_type === 'CASHDEPOSIT')
+						$cash_balance -= $c->amount;
+					if ($c->transaction_type === 'PURCHASE')
+						$stock_value -= $c->amount;
+					if ($c->transaction_type === 'PAYOUT')
+						$payouts -= $c->amount;
+					if ($c->transaction_type === 'TABCREDIT')
+						$tab_assets -= $c->amount;
+					$bank_balance = $c->balance;
+					break;
+				case 3 : // purchase
+					$stock_value = $this->getStockValueByDate ( $c->timestamp );
+					break;
+				case 4 : // stocktake
+					$stock_value = $this->getStockValueByDate ( $c->timestamp );
+					break;
+				case 5 : // transaction
+					$tab_assets += $c->amount;
+					break;
+			}
+		}
+		
+		// the csv file with the first row
+		$output = implode ( ",", array (
+				'type',
+				'timestamp',
+				'amount',
+				'app_type' 
+		) );
+		
+		foreach ( $a as $row ) {
+			switch ($row->type) {
+				case 1 : // cash-transaction
+					$output .= implode ( ",", array (
+							'cash transaction',
+							$row -> timestamp,
+							$row -> amount,
+							$row -> transaction_type
+					) ); // append each row
+					$output .= "\r\n";
+					break;
+				case 2 : // bank-transaction
+					$output .= implode ( ",", array (
+							'bank transaction',
+							$row -> timestamp,
+							$row -> amount,
+							$row -> transaction_type
+					) ); // append each row
+					$output .= "\r\n";
+					break;
+				case 5 : // tab-transaction
+					$output .= implode ( ",", array (
+							'tab transaction',
+							$row -> timestamp,
+							$row -> amount,
+							$row -> transaction_type
+					) ); // append each row
+					$output .= "\r\n";
+					break;
+			}
+			
+		}
+		
+		// headers used to make the file "downloadable", we set them manually
+		// since we can't use Laravel's Response::download() function
+		$headers = array (
+				'Content-Type' => 'text/csv',
+				'Content-Disposition' => 'attachment; filename="transactions.csv"' 
+		);
+		
+		// our response, this will be equivalent to your download() but
+		// without using a local file
+		return Response::make ( rtrim ( $output, "\n" ), 200, $headers );
 	}
 	
 	// ============================ Super User AJAX Functions ===================================
