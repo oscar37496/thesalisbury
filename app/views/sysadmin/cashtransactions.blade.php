@@ -32,19 +32,19 @@
 								<tr>
 									<td>{{{ $transaction->timestamp }}}</td>
 									<td>{{{ money_format('%n', $transaction -> amount / 100 ) }}}</td>
-									<td>{{{ $transaction -> type }}}</td>
+									<td>{{{ $transaction -> app_type }}}</td>
 									<td>{{{ $transaction -> description }}}</td>
 									<td id="{{{ $transaction->id }}}">
-										@if(strcmp('CASHDEPOSIT', $transaction->type) != 0)
-										@if( isset($transaction -> user))
-										{{{ $transaction -> user -> first_name . ' ' . $transaction -> user -> last_name }}} 
-										@elseif (isset($transaction -> purchase))
-										@foreach($transaction -> purchase as $purchase)
-										{{{ $purchase -> volume . 'ml of ' . $purchase -> name .' on '.date('M j',strtotime($purchase -> timestamp)) }}} 
-										@endforeach
-										@else
-										No Item Linked 
-										@endif
+										@if(strcmp('CASHDEPOSIT', $transaction->app_type) != 0)
+											@if( isset($transaction -> user))
+												{{{ $transaction -> user -> first_name . ' ' . $transaction -> user -> last_name }}} 
+											@elseif (isset($transaction -> purchase))
+												@foreach($transaction -> purchase as $purchase)
+												{{{ $purchase -> volume . 'ml of ' . $purchase -> name .' on '.date('M j',strtotime($purchase -> timestamp)) }}} 
+												@endforeach
+											@else
+												No Item Linked 
+											@endif
 										@endif</td>
 									<td>@if(strcmp('CASHDEPOSIT', $transaction->type) != 0)
 										<select name="Users" id="Users" onchange="linkTransaction({{{ $transaction->id }}}, this.value);">
