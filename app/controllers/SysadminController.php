@@ -37,6 +37,13 @@ class SysadminController extends BaseController {
 		$data ['users'] = User::all ()->sortBy ( 'first_name' );
 		$data ['ingredients'] = Ingredient::all ();
 		
+		$boys = array('beniac', 'bliss', 'brand', 'mcnulty', 'morris', 'pullar', 'straton');
+		
+		foreach ($boys as $lad){
+			$data ['payouts'][$lad] = -DB::select( 'SELECT SUM(amount) `total` FROM cash_transactions WHERE app_type = \'PAYOUT\' AND app_description = ?', array($lad) )[0]->total/100 - DB::select ( "SELECT SUM(amount) `total` FROM bank_transactions WHERE app_type = 'PAYOUT' AND app_description = ?", array($lad) )[0]->total/100;
+		}
+		
+		
 		$data ['location'] = 'Operations';
 		$data ['description'] = 'Admin Operations';
 		$this->layout->content = View::make ( 'sysadmin.operations', $data );

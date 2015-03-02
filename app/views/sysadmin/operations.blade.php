@@ -116,6 +116,9 @@ function setPurchase(id, volume, cost){
                     <h3 class="box-title">Add Payout</h3>
                 </div>
                 <div class="box-body">
+                	@foreach($payouts as $name => $payout)
+                	{{{$name . ' ' . money_format('%n', $payout)}}} <br>
+                	@endforeach
                     <p id="payout-status"></p>
                     <input type="text" id="payout-amount-text" />
                     <select name="Users" id="payout-user-dropdown">
