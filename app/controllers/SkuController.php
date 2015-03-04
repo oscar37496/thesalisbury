@@ -15,7 +15,7 @@ class SkuController extends \BaseController {
                 'id' => $sku->id,
                 'description' => $sku->description,
                 'price' => $sku->price,
-                'hotkey' => $sku->hotkey
+                'price_happy_hour' => $sku->price_happy_hour
             ];
 		}
 		return Response::json($response, 200);
