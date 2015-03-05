@@ -325,10 +325,10 @@ class SysadminController extends BaseController {
 					$t->type = $drs [4];
 					$t->description = $drs [5];
 					$t->balance = round ( $drs [6] * 100 );
-					if (DB::select ( 'SELECT COUNT(*) `count` FROM bank_transactions WHERE amount = ? AND type = ? AND description = ? AND balance = ?', array (
+					if (DB::select ( 'SELECT COUNT(*) `count` FROM bank_transactions WHERE date = ? AND amount = ? AND type = ? AND balance = ?', array (
+							$t->date,
 							$t->amount,
 							$t->type,
-							$t->description,
 							$t->balance 
 					) )[0]->count == 0) {
 						$t->save ();
