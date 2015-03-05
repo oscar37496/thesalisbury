@@ -270,7 +270,7 @@
                 <div class="col-sm-4">
                     <div class="team-member">
                         <img src="https://graph.facebook.com/v2.2/743762199/picture?height=180&amp;width=180" class="img-responsive img-circle" alt="">
-                        <h4>Alex Brand</h4>
+                        <h4>Alex</h4>
                         <p class="text-muted">Juris Doctor</p>
                        <!-- <ul class="list-inline social-buttons">
                             <li><a href="#"><i class="fa fa-facebook"></i></a>
@@ -283,42 +283,42 @@
                 <div class="col-sm-4">
                     <div class="team-member">
                         <img src="https://graph.facebook.com/v2.2/825565178/picture?height=180&amp;width=180" class="img-responsive img-circle" alt="">
-                        <h4>Daniel Straton</h4>
+                        <h4>Daniel</h4>
                         <p class="text-muted">Bachelor of Civil Engineering/Bachelor of Commerce</p>
                     </div>
                 </div>
                 <div class="col-sm-4">
                     <div class="team-member">
                         <img src="https://graph.facebook.com/v2.2/560298673/picture?height=180&amp;width=180" class="img-responsive img-circle" alt="">
-                        <h4>George Beniac</h4>
+                        <h4>George</h4>
                         <p class="text-muted">Bachelor of Economics</p>
                     </div>
                 </div>
                 <div class="col-sm-4">
                     <div class="team-member">
                         <img src="https://graph.facebook.com/v2.2/784987855/picture?height=180&amp;width=180" class="img-responsive img-circle" alt="">
-                        <h4>Jack Bliss</h4>
+                        <h4>Jack</h4>
                         <p class="text-muted">Bachelor of Arts</p>
                     </div>
                 </div>
                 <div class="col-sm-4">
                     <div class="team-member">
                         <img src="https://graph.facebook.com/v2.2/543809016/picture?height=180&amp;width=180" class="img-responsive img-circle" alt="">
-                        <h4>Lachlan Pullar</h4>
+                        <h4>Lachlan</h4>
                         <p class="text-muted">Bachelor of Commerce</p>
                     </div>
                 </div>
                 <div class="col-sm-4">
                     <div class="team-member">
                         <img src="https://graph.facebook.com/v2.2/1186296357/picture?height=180&amp;width=180" class="img-responsive img-circle" alt="">
-                        <h4>Oscar McNulty</h4>
+                        <h4>Oscar</h4>
                         <p class="text-muted">Bachelor of Aerospace Engineering/Bachelor of Science</p>
                     </div>
                 </div>
                 <div class="col-sm-4">
                     <div class="team-member">
                         <img src="https://graph.facebook.com/v2.2/653796752/picture?height=180&amp;width=180" class="img-responsive img-circle" alt="">
-                        <h4>Rob Morris</h4>
+                        <h4>Rob</h4>
                         <p class="text-muted">Juris Doctor</p>
                     </div>
                 </div>
