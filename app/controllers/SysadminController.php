@@ -388,8 +388,8 @@ class SysadminController extends BaseController {
 		$tag->id = $tag;
 		$tag->description = 'Salisbury Card';
 		$tag->save();
-		if (($user = User::where ( 'id', $userid )->first ()) != NULL)
-		return 'Salisbury Card added to '. $user->first_name . '\'s account';
+		if (($user_object = User::where ( 'id', $user )->first ()) != NULL)
+		return 'Salisbury Card added to '. $user_object->first_name . '\'s account';
 		return 'Failed';
 	}
 	
