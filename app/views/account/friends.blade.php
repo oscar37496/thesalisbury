@@ -85,7 +85,7 @@
 			"bFilter" : false,
 			"bSort" : true,
 			"bInfo" : true,
-			"bAutoWidth" : false
+			"bAutoWidth" : false,
 			"columnDefs": [
 					       { type: 'currency', targets: 4;
 					       type: 'currency', targets: 5;
