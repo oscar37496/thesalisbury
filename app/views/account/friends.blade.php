@@ -62,25 +62,26 @@
 <script src="../../js/plugins/datatables/dataTables.bootstrap.js" type="text/javascript"></script>
 <!-- page script -->
 <script type="text/javascript">
+	jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+	    "currency-pre": function ( a ) {
+	        a = (a==="-") ? 0 : a.replace( /[^\d\-\.]/g, "" );
+	        return parseFloat( a );
+	    },
+	 
+	    "currency-asc": function ( a, b ) {
+	        return a - b;
+	    },
+	 
+	    "currency-desc": function ( a, b ) {
+	        return b - a;
+	    }
+	} );
 	$(function() {
-		jQuery.extend( jQuery.fn.dataTableExt.oSort, {
-		    "currency-pre": function ( a ) {
-		        a = (a==="-") ? 0 : a.replace( /[^\d\-\.]/g, "" );
-		        return parseFloat( a );
-		    },
-		 
-		    "currency-asc": function ( a, b ) {
-		        return a - b;
-		    },
-		 
-		    "currency-desc": function ( a, b ) {
-		        return b - a;
-		    }
-		} );
+		
 
 		$("#example1").dataTable({
 			"columnDefs": [
-					       { type: 'currency', targets: [ 4,5,6 ]}
+					       { targets: [ 3,4,5 ], type: 'currency' }
 					     ]
 		});
 		$('#example2').dataTable({
