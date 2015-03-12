@@ -26,7 +26,6 @@ function setPurchase(id, volume, cost){
 	
 };
 function setTag(user_id, tag_id){
-	var int_cost = Math.round(cost*100);
 	$('#new-tag').load('/account/sysadmin/operations/tag/'+user_id+'/'+tag_id);
 	
 };
