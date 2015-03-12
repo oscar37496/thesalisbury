@@ -384,11 +384,11 @@ class SysadminController extends BaseController {
 	
 	public function setNFCTag($user, $tag){
 		if (($user_object = User::where ( 'id', $user )->first ()) != NULL){
-			$tag = new Tag();
-			$tag->user_id = $user;
-			$tag->id = $tag;
-			$tag->description = 'Salisbury Card';
-			$tag->save();
+			$newtag = new Tag();
+			$newtag->user_id = $user;
+			$newtag->id = $tag;
+			$newtag->description = 'Salisbury Card';
+			$newtag->save();
 			return 'Salisbury Card added to '. $user_object->first_name . '\'s account';
 		}
 		return 'Failed';
