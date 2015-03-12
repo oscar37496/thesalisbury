@@ -58,7 +58,7 @@
 
 @section('foot')
 <!-- DATA TABES SCRIPT -->
-<script src="../../js/plugins/datatables/jquery.dataTables.js" type="text/javascript"></script>
+<script src="//cdn.datatables.net/1.10.5/js/jquery.dataTables.min.js" type="text/javascript"></script>
 <script src="../../js/plugins/datatables/dataTables.bootstrap.js" type="text/javascript"></script>
 <!-- page script -->
 <script type="text/javascript">
@@ -82,17 +82,6 @@
 		$("#example1").dataTable({
 			"columnDefs": [
 					       { targets: [ 3,4,5 ], type: 'currency' }
-					     ]
-		});
-		$('#example2').dataTable({
-			"bPaginate" : true,
-			"bLengthChange" : false,
-			"bFilter" : false,
-			"bSort" : true,
-			"bInfo" : true,
-			"bAutoWidth" : false,
-			"columnDefs": [
-					       { type: 'currency', targets: [ 4,5,6 ]}
 					     ]
 		});
 	}); 
