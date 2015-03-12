@@ -78,7 +78,11 @@
 		    }
 		} );
 
-		$("#example1").dataTable();
+		$("#example1").dataTable({
+			"columnDefs": [
+					       { type: 'currency', targets: [ 4,5,6 ]}
+					     ]
+		});
 		$('#example2').dataTable({
 			"bPaginate" : true,
 			"bLengthChange" : false,
