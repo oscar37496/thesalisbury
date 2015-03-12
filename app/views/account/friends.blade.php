@@ -87,9 +87,7 @@
 			"bInfo" : true,
 			"bAutoWidth" : false,
 			"columnDefs": [
-					       { type: 'currency', targets: 4;
-					       type: 'currency', targets: 5;
-					       type: 'currency', targets: 6 }
+					       { type: 'currency', targets: [ 4,5,6 ]}
 					     ]
 		});
 	}); 
