@@ -63,6 +63,21 @@
 <!-- page script -->
 <script type="text/javascript">
 	$(function() {
+		jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+		    "currency-pre": function ( a ) {
+		        a = (a==="-") ? 0 : a.replace( /[^\d\-\.]/g, "" );
+		        return parseFloat( a );
+		    },
+		 
+		    "currency-asc": function ( a, b ) {
+		        return a - b;
+		    },
+		 
+		    "currency-desc": function ( a, b ) {
+		        return b - a;
+		    }
+		} );
+
 		$("#example1").dataTable();
 		$('#example2').dataTable({
 			"bPaginate" : true,
@@ -71,22 +86,14 @@
 			"bSort" : true,
 			"bInfo" : true,
 			"bAutoWidth" : false
+			"columnDefs": [
+					       { type: 'currency', targets: 4;
+					       type: 'currency', targets: 5;
+					       type: 'currency', targets: 6 }
+					     ]
 		});
 	}); 
-	jQuery.extend( jQuery.fn.dataTableExt.oSort, {
-	    "currency-pre": function ( a ) {
-	        a = (a==="-") ? 0 : a.replace( /[^\d\-\.]/g, "" );
-	        return parseFloat( a );
-	    },
-	 
-	    "currency-asc": function ( a, b ) {
-	        return a - b;
-	    },
-	 
-	    "currency-desc": function ( a, b ) {
-	        return b - a;
-	    }
-	} );
+	
 </script>
 @stop
 
