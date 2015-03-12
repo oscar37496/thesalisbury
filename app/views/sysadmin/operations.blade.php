@@ -25,6 +25,11 @@ function setPurchase(id, volume, cost){
 	$('#purchase-amount').load('/account/sysadmin/operations/purchase/'+id+'/'+volume+'/'+int_cost);
 	
 };
+function setTag(user_id, tag_id){
+	var int_cost = Math.round(cost*100);
+	$('#new-tag').load('/account/sysadmin/operations/tag/'+user_id+'/'+tag_id);
+	
+};
 </script>
 @stop
 
@@ -86,6 +91,26 @@ function setPurchase(id, volume, cost){
                 </div><!-- /.box-body -->
                 <div class="box-footer">
                 	<input type="submit" value="Add" onclick="setCredit($('#credit-user-dropdown').val(),$('#credit-amount-text').val())" />
+                </div><!-- /.box-body -->
+            </div><!-- /.box -->
+            
+            <div class="box box-danger">
+                <div class="box-header">
+                	<i class="fa fa-credit-card"></i>
+                    <h3 class="box-title">Add Tag to Account</h3>
+                </div>
+                <div class="box-body">
+                    <p id="new-tag"></p>
+                    <input type="text" id="tag-id-text" />
+                    <select name="Users" id="tag-user-dropdown">
+						<option>None</option>
+						@foreach($users as $user)
+						<option value="{{{ $user-> id }}}">{{{ $user->first_name }}}{{{ ($user->middle_name ? ' '.$user->middle_name.' ' : ' ') }}}{{{ $user->last_name }}}</option>
+						@endforeach
+					</select>
+                </div><!-- /.box-body -->
+                <div class="box-footer">
+                	<input type="submit" value="Add" onclick="setTag($('#tag-user-dropdown').val(),$('#tag-id-text').val())" />
                 </div><!-- /.box-body -->
             </div><!-- /.box -->
 

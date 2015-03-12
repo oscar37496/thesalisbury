@@ -69,6 +69,7 @@ Route::group(array('prefix' => 'account/sysadmin', 'before' => 'auth.sysadmin'),
 	Route::get('operations/credit/{user}/{amount}', 'SysadminController@updateCredit');
 	Route::get('operations/purchase/{id}/{volume}/{cost}', 'SysadminController@updatePurchase');
 	Route::get('operations/payout/{user}/{amount}', 'SysadminController@setPayout');
+	Route::get('operations/tag/{user}/{tag}', 'SysadminController@setNFCTag');
 });
 
 Route::group(array('prefix' => 'account/charles', 'before' => 'auth.charles'), function() {

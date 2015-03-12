@@ -382,6 +382,17 @@ class SysadminController extends BaseController {
 		}
 	}
 	
+	public function setNFCTag($user, $tag){
+		$tag = new Tag();
+		$tag->user_id = $user;
+		$tag->id = $tag;
+		$tag->description = 'Salisbury Card';
+		$tag->save();
+		if (($user = User::where ( 'id', $userid )->first ()) != NULL)
+		return 'Salisbury Card added to '. $user->first_name . '\'s account';
+		return 'Failed';
+	}
+	
 	// ============================= Helper Functions ===========================================
 	// ==========================================================================================
 	private function getAssets() {
