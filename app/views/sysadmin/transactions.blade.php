@@ -91,23 +91,30 @@
 
 @section('foot')
 <!-- DATA TABES SCRIPT -->
-<script src="../../js/plugins/datatables/jquery.dataTables.js" type="text/javascript"></script>
+<script src="//cdn.datatables.net/1.10.5/js/jquery.dataTables.min.js" type="text/javascript"></script>
 <script src="../../js/plugins/datatables/dataTables.bootstrap.js" type="text/javascript"></script>
 <!-- page script -->
 <script type="text/javascript">
+	jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+	    "currency-pre": function ( a ) {
+	        a = (a==="-") ? 0 : a.replace( /[^\d\-\.]/g, "" );
+	        return parseFloat( a );
+	    },
+	 
+	    "currency-asc": function ( a, b ) {
+	        return a - b;
+	    },
+	 
+	    "currency-desc": function ( a, b ) {
+	        return b - a;
+	    }
+	} );
 	$(function() {
 		$("#example1").dataTable({
-			"aoColumnDefs": [
-		      { "bSearchable": false, "aTargets": [ 5, 6 ] }
+			"columnDefs": [
+		      { "bSearchable": false, targets: [ 5, 6 ] }
+		      { type: 'currency', targets: [ 1, 6 ] }
 		    ]
-		});
-		$('#example2').dataTable({
-			"bPaginate" : true,
-			"bLengthChange" : false,
-			"bFilter" : false,
-			"bSort" : true,
-			"bInfo" : true,
-			"bAutoWidth" : false
 		});
 	}); 
 </script>
@@ -139,20 +146,7 @@
              });
         }
     };
-    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
-	    "currency-pre": function ( a ) {
-	        a = (a==="-") ? 0 : a.replace( /[^\d\-\.]/g, "" );
-	        return parseFloat( a );
-	    },
-	 
-	    "currency-asc": function ( a, b ) {
-	        return a - b;
-	    },
-	 
-	    "currency-desc": function ( a, b ) {
-	        return b - a;
-	    }
-	} );
+    
 </script>
 
 @stop

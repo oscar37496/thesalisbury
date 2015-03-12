@@ -88,31 +88,28 @@ $("#"+id).load(url)
 <script src="../../js/plugins/datatables/dataTables.bootstrap.js" type="text/javascript"></script>
 <!-- page script -->
 <script type="text/javascript">
+jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+    "currency-pre": function ( a ) {
+        a = (a==="-") ? 0 : a.replace( /[^\d\-\.]/g, "" );
+        return parseFloat( a );
+    },
+ 
+    "currency-asc": function ( a, b ) {
+        return a - b;
+    },
+ 
+    "currency-desc": function ( a, b ) {
+        return b - a;
+    }
+} );
 	$(function() {
-		$("#example1").dataTable();
-		$('#example2').dataTable({
-			"bPaginate" : true,
-			"bLengthChange" : false,
-			"bFilter" : false,
-			"bSort" : true,
-			"bInfo" : true,
-			"bAutoWidth" : false
+		$("#example1").dataTable({
+			"columnDefs": [
+					       { targets: [ 6,7,8 ], type: 'currency' }
+					     ]
 		});
 	}); 
-	jQuery.extend( jQuery.fn.dataTableExt.oSort, {
-	    "currency-pre": function ( a ) {
-	        a = (a==="-") ? 0 : a.replace( /[^\d\-\.]/g, "" );
-	        return parseFloat( a );
-	    },
-	 
-	    "currency-asc": function ( a, b ) {
-	        return a - b;
-	    },
-	 
-	    "currency-desc": function ( a, b ) {
-	        return b - a;
-	    }
-	} );
+	
 </script>
 @stop
 

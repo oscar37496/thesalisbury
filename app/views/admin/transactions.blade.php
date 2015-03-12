@@ -78,21 +78,10 @@
 
 @section('foot')
 <!-- DATA TABES SCRIPT -->
-<script src="../../js/plugins/datatables/jquery.dataTables.js" type="text/javascript"></script>
+<script src="//cdn.datatables.net/1.10.5/js/jquery.dataTables.min.js" type="text/javascript"></script>
 <script src="../../js/plugins/datatables/dataTables.bootstrap.js" type="text/javascript"></script>
 <!-- page script -->
 <script type="text/javascript">
-	$(function() {
-		$("#example1").dataTable();
-		$('#example2').dataTable({
-			"bPaginate" : true,
-			"bLengthChange" : false,
-			"bFilter" : false,
-			"bSort" : true,
-			"bInfo" : true,
-			"bAutoWidth" : false
-		});
-	});
 	jQuery.extend( jQuery.fn.dataTableExt.oSort, {
 	    "currency-pre": function ( a ) {
 	        a = (a==="-") ? 0 : a.replace( /[^\d\-\.]/g, "" );
@@ -107,6 +96,14 @@
 	        return b - a;
 	    }
 	} ); 
+	$(function() {
+		$("#example1").dataTable({
+			"columnDefs": [
+					       { targets: [ 5,7 ], type: 'currency' }
+					     ]
+		});
+	});
+	
 </script>
 @stop
 
