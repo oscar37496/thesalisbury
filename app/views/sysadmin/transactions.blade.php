@@ -112,7 +112,7 @@
 	$(function() {
 		$("#example1").dataTable({
 			"columnDefs": [
-		      { "bSearchable": false, targets: [ 5, 6 ] }
+		      { "bSearchable": false, targets: [ 5, 6 ] },
 		      { type: 'currency', targets: [ 1, 6 ] }
 		    ]
 		});
