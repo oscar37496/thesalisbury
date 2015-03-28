@@ -33,8 +33,8 @@ $("#"+id).load('/account/admin/stocktake/'+id+'/'+$('#text'+id).val())
 								<tr>
 									<td>{{{ $ingredient['name'] }}}</td>
 									<td id="{{{$ingredient['id']}}}">
-										@if( $isset($db_stocktake = DB::select('SELECT volume FROM stocktakes WHERE ingredient_id = ? ORDER BY timestamp DESC LIMIT 0, 1', array($ingredient['id']))
-										{{{ $db_stocktake[0]->volume }}}</td>
+										@if( count(DB::select('SELECT volume FROM stocktakes WHERE ingredient_id = ? ORDER BY timestamp DESC LIMIT 0, 1', array($ingredient['id']))) > 0 )
+										{{{ DB::select('SELECT volume FROM stocktakes WHERE ingredient_id = ? ORDER BY timestamp DESC LIMIT 0, 1', array($ingredient['id']))[0]->volume }}}</td>
 										@endif
 									<td><input type="text" id="text{{{$ingredient['id']}}}" /></td>
 									<td><input type="submit" value="Submit" onclick="loadAjax({{{$ingredient['id']}}})" /></td>
