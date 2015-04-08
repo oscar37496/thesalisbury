@@ -100,16 +100,27 @@ Salisbury Syndicate</textarea><button class="copy-button" type="button" data-cli
 <script src="../../js/plugins/datatables/dataTables.bootstrap.js" type="text/javascript"></script>
 <!-- page script -->
 <script type="text/javascript">
+jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+    "currency-pre": function ( a ) {
+        a = (a==="-") ? 0 : a.replace( /[^\d\-\.]/g, "" );
+        return parseFloat( a );
+    },
+ 
+    "currency-asc": function ( a, b ) {
+        return a - b;
+    },
+ 
+    "currency-desc": function ( a, b ) {
+        return b - a;
+    }
+} );
 	$(function() {
-		$("#example1").dataTable();
-		$('#example2').dataTable({
-			"bPaginate" : true,
-			"bLengthChange" : false,
-			"bFilter" : false,
-			"bSort" : true,
-			"bInfo" : true,
-			"bAutoWidth" : false
+		$("#example1").dataTable({
+			"columnDefs": [
+					       { targets: [ 5,6,7 ], type: 'currency' }
+					     ]
 		});
+	}); 
 	}); 
 </script>
 <script>
