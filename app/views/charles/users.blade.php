@@ -96,7 +96,7 @@ Salisbury Syndicate</textarea><button class="copy-button" type="button" data-cli
 
 @section('foot')
 <!-- DATA TABES SCRIPT -->
-<script src="../../js/plugins/datatables/jquery.dataTables.js" type="text/javascript"></script>
+<script src="//cdn.datatables.net/1.10.5/js/jquery.dataTables.min.js" type="text/javascript"></script>
 <script src="../../js/plugins/datatables/dataTables.bootstrap.js" type="text/javascript"></script>
 <!-- page script -->
 <script type="text/javascript">
