@@ -49,9 +49,8 @@
 									<td>{{{ $user['last_name'] }}}</td>
 									<td id="{{{ $key }}}">{{{ $user['last_messaged'] }}} </td>
 									<td>
-										<textarea style="display: none" id="{{{ $key }}}-text"onclick="select_all(this)">Hey mate, 
-Your final tab balance is {{{ money_format('%n', $user['balance'] / 100 ) }}}
-This will need to be paid as soon as possible.
+										<textarea style="display: none" id="{{{ $key }}}-text"onclick="select_all(this)">Hey {{{$user['first_name']}}}, 
+Your current tab balance is {{{ money_format('%n', $user['balance'] / 100 ) }}}.
 This can be paid either by:
  
 1. Bank transfer
@@ -60,9 +59,10 @@ BSB: 082-372
 Account: 55-347-4724 
 Reference: Your name
 
-2. In cash to ROOM XX T-RAD
+2. In cash to ROOM 133 in Tower.
 
-Note: Your tab debt above will need to be paid before 5pm Wednesday, for you to be ticked off the list of outstanding debts we will give to the bouncers.
+If you have any queries check your account on the Salisbury website.
+Your tab debt above will need to be paid before 5pm Wednesday, for you to be ticked off the list of outstanding debts we will give to the bouncers.
 Thanks,
 Salisbury Syndicate</textarea><button class="copy-button" type="button" data-clipboard-target="{{{ $key }}}-text" onclick="messageUser({{{ $key }}})">Message</button>	
 									</td>
