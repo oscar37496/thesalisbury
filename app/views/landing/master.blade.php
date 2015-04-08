@@ -14,7 +14,9 @@
 	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 	<link rel="icon" href="/favicon.ico" type="image/x-icon">
 
-	<meta property="og:image" content="http://thesalisbury.com.au/apple-touch-icon-precomposed.png"/>
+	<meta property="og:url" content="http://thesalisbury.com.au/"/>
+	<meta property="og:title" content="The Salisbury at St Paul's College"/>
+	<meta property="og:image" content="http://thesalisbury.com.au/img/sals-s-white.png"/>
 	<meta property="fb:app_id" content="737486179667936" />
 	<meta property="og:description" content="The Salisbury is the premier student bar at Sydney University. Located and St Paul's College in Camperdown, it has been run by the students of the college since it was established in 1970." />
 	
