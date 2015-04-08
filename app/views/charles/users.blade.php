@@ -121,7 +121,6 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
 					     ]
 		});
 	}); 
-	}); 
 </script>
 <script>
       window.fbAsyncInit = function() {
