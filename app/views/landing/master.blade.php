@@ -229,7 +229,7 @@
                                     <h4 class="subheading">A Bar Run for the Students</h4>
                                 </div>
                                 <div class="timeline-body">
-                                    <p class="text-muted">The Salisbury Bar is foremost a student's bar, run and enjoyed by St Paul's students and their guests. It functions as the social heart of the College and is open and to be enjoyed by all men of the College.</p>
+                                    <p class="text-muted">The Salisbury Bar is foremost a student's bar, run and enjoyed by St Paul's students and their guests. It functions as the social heart of the College and is open to be enjoyed by all men of the College.</p>
                                 </div>
                             </div>
                         </li>
@@ -243,7 +243,7 @@
                                     <h4 class="subheading">Looking to the Future</h4>
                                 </div>
                                 <div class="timeline-body">
-                                    <p class="text-muted">The 2015 Syndicate, working on contributions made by the previous years, have overseen the reconstruction of the bar area that will preserve The Salisbury's place as the foremost Student Bar for years to come. Thus keeping Charles's legacy intact for the future generations of Paulines.</p>
+                                    <p class="text-muted">The 2015 Syndicate, expanding on contributions made by the previous years, has overseen the reconstruction of the bar area that will preserve The Salisbury's place as the foremost Student Bar for years to come. We hope to keep Charlie's legacy intact for many future generations of Paulines.</p>
                                 </div>
                             </div>
                         </li>
