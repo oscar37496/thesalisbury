@@ -201,7 +201,7 @@
                                     <h4 class="subheading">A Legend Enters College</h4>
                                 </div>
                                 <div class="timeline-body">
-                                    <p class="text-muted">The Salisbury Bar is named after Charles Victor Salisbury. Charles was resident in St. Paul's College between 1921 and 1927. Charles died in College on 26 February 1987. Charles made significant contributions to the College, both during his life and, following his death, through the substantial bequest to the College which allowed the College to build the bar which carries his name.</p>
+                                    <p class="text-muted">The Salisbury Bar is named after Charles Victor Salisbury. Charles was resident in St. Paul's College between 1921 and 1927. Charles died in College on 26 February 1987. Charles made significant contributions to the College, both during his life and, following his death. A substantial bequest to the College was made in his will which allowed the College to build the bar which carries his name.</p>
                                 </div>
                             </div>
                         </li>
