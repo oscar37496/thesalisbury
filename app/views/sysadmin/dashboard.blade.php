@@ -158,6 +158,74 @@ function setCredit($id, $amount){
 	</div><!-- /.row -->
 
 	<div class="row">
+		<div class="col-lg-3 col-xs-6">
+			<!-- small box -->
+			<div class="small-box bg-aqua">
+				<div class="inner">
+					<h3> {{{ substr(money_format('%n',$revenue_24h/100),0,-3) }}}<sup style="font-size: 20px">{{{ substr(number_format(abs($revenue_24h/100), 2),-3) }}}</sup>
+					</h3>
+					<p>
+						Revenue 24h
+					</p>
+				</div>
+				<div class="icon">
+					<i class="ion ion-bag"></i>
+				</div>
+				<a href="/account/transactions" class="small-box-footer"> More info <i class="fa fa-arrow-circle-right"></i> </a>
+			</div>
+		</div><!-- ./col -->
+		<div class="col-lg-3 col-xs-6">
+			<!-- small box -->
+			<div class="small-box bg-green">
+				<div class="inner">
+					<h3> {{{ substr(money_format('%n',$revenue_7d/100),0,-3) }}}<sup style="font-size: 20px">{{{ substr(number_format(abs($revenue_7d/100), 2),-3) }}}</sup>
+					</h3>
+					<p>
+						Revenue Weekly
+					</p>
+				</div>
+				<div class="icon">
+					<i class="ion ion-stats-bars"></i>
+				</div>
+				<a href="/account/statistics" class="small-box-footer"> More info <i class="fa fa-arrow-circle-right"></i> </a>
+			</div>
+		</div><!-- ./col -->
+		<div class="col-lg-3 col-xs-6">
+			<!-- small box -->
+			<div class="small-box bg-red">
+				<div class="inner">
+					<h3> {{{ substr(money_format('%n',$revenue_todate/100),0,-3) }}}<sup style="font-size: 20px">{{{ substr(number_format(abs($revenue_todate/100), 2),-3) }}}</sup>
+					</h3>
+					<p>
+						Revenue to Date
+					</p>
+				</div>
+				<div class="icon">
+					<i class="ion ion-card"></i>
+				</div>
+				<a href="/account/cards" class="small-box-footer"> More info <i class="fa fa-arrow-circle-right"></i> </a>
+			</div>
+		</div><!-- ./col -->
+		<div class="col-lg-3 col-xs-6">
+			<!-- small box -->
+			<div class="small-box bg-yellow">
+				<div class="inner">
+					<h3> {{{ $standard_drinks }}}</sup>
+					</h3>
+					<p>
+						Standards on Tabs
+					</p>
+				</div>
+				<div class="icon">
+					<i class="ion ion-ios-people"></i>
+				</div>
+				<a href="/account/friends" class="small-box-footer"> More info <i class="fa fa-arrow-circle-right"></i> </a>
+			</div>
+		</div><!-- ./col -->
+	</div><!-- /.row -->
+	
+		
+	<div class="row">
         <div class="col-md-12">
             
             <!-- Line chart -->

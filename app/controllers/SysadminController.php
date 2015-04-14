@@ -20,6 +20,10 @@ class SysadminController extends BaseController {
 		$data ['liabilities'] = $this->getLiabilities ();
 		$data ['stock_value'] = $this->getStockValue ();
 		$data ['cash_on_hand'] = $this->getCashOnHand ();
+		$data ['revenue_24h'] = DB::select( 'SELECT SUM(price*quantity)+0 `total` FROM transactions WHERE timestamp > (NOW()-INTERVAL 1 DAY)')[0]->total;
+		$data ['revenue_7d'] = DB::select( 'SELECT SUM(price*quantity)+0 `total` FROM transactions WHERE timestamp > (NOW()-INTERVAL 7 DAY)')[0]->total;
+		$data ['revenue_todate'] = DB::select( 'SELECT SUM(price*quantity)+0 `total` FROM transactions')[0]->total;
+		$data ['standard_drinks'] = DB::select('SELECT sum(t.quantity*s.standard_drinks)/100.0 `total` FROM transactions AS t LEFT JOIN skus AS s ON t.sku_id = s.id')[0]->total;
 		$data ['net_tabs'] = DB::select ( 'SELECT SUM(balance) `total` FROM users' )[0]->total;
 		$data ['equity'] = $data ['assets'] - $data ['liabilities'];
 		$data ['payout'] = $this->getPayouts ();
