@@ -78,9 +78,9 @@
                     <li>
                         <a class="page-scroll" href="#history">History</a>
                     </li>
-                    <li>
+                    <!-- <li>
                         <a class="page-scroll" href="#team">2015 Syndicate</a>
-                    </li>
+                    </li>-->
                     <li>
                         <a href="/account/dashboard">Account</a>
                     </li>
