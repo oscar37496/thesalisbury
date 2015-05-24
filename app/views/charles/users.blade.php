@@ -59,12 +59,12 @@ BSB: 082-372
 Account: 55-347-4724 
 Reference: Your name
 
-2. In cash to ROOM 133 in Tower.
+2. In cash to ROOM 133 above the main archway.
 
 If you have any queries check your account on the Salisbury website.
-Your tab debt above will need to be paid before 5pm Wednesday, for you to be ticked off the list of outstanding debts we will give to the bouncers.
+Your tab debt above will need to be paid before 5pm Wednesday, for you to be ticked off the list of outstanding debts we will give to security.
 Thanks,
-Salisbury Syndicate</textarea><button class="copy-button" type="button" data-clipboard-target="{{{ $key }}}-text" onclick="messageUser({{{ $key }}})">Message</button>	
+Charlie</textarea><button class="copy-button" type="button" data-clipboard-target="{{{ $key }}}-text" onclick="messageUser({{{ $key }}})">Message</button>	
 									</td>
 									<td>{{{ money_format('%n', $user['total_spent_last_week'] / 100 ) }}}</td>
 									<td>{{{ money_format('%n', $user['total_spent'] / 100 ) }}}</td>
