@@ -62,7 +62,7 @@ Reference: Your name
 2. In cash to ROOM 133 above the main archway.
 
 If you have any queries check your account on the Salisbury website.
-Your tab debt above will need to be paid before 5pm Wednesday, for you to be ticked off the list of outstanding debts we will give to security.
+Your tab debt above will need to be paid before 5pm next Wednesday, for you to be ticked off the list of outstanding debts we will give to security.
 Thanks,
 Charlie</textarea><button class="copy-button" type="button" data-clipboard-target="{{{ $key }}}-text" onclick="messageUser({{{ $key }}})">Message</button>	
 									</td>
