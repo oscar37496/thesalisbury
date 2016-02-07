@@ -20,9 +20,9 @@ function setPayout(id, amount){
 	$('#payout-status').load('/account/sysadmin/operations/payout/'+id+'/'+int_amount);
 	
 };
-function setPurchase(id, volume, cost){
+function setPurchase(desc, cost){
 	var int_cost = Math.round(cost*100);
-	$('#purchase-amount').load('/account/sysadmin/operations/purchase/'+id+'/'+volume+'/'+int_cost);
+	$('#purchase-amount').load('/account/sysadmin/operations/purchase/'+int_cost+'/'+desc);
 	
 };
 function setTag(user_id, tag_id){
@@ -64,9 +64,9 @@ function setTag(user_id, tag_id){
                 </div>
                 <div class="box-body">
                     <p id="cash-amount">
-                    	{{{ money_format('%n',($current = DB::select('SELECT SUM(amount) `total` FROM cash_transactions')[0]->total - DB::select("SELECT SUM(amount) `total` FROM bank_transactions WHERE app_type = 'CASHDEPOSIT'")[0]->total)/100) }}}
+                    	Current {{{ money_format('%n',($current = DB::select('SELECT SUM(amount) `total` FROM cash_transactions')[0]->total - DB::select("SELECT SUM(amount) `total` FROM bank_transactions WHERE app_type = 'CASHDEPOSIT'")[0]->total)/100) }}}
                     </p>
-                    <input type="text" id="text-cash-amount" />
+                    <p>New $<input type="text" id="text-cash-amount" placeholder="4000"/></p>
                 </div><!-- /.box-body -->
                 <div class="box-footer">
                 	<input type="submit" value="Reconcile" onclick="setCash($('#text-cash-amount').val())" />
@@ -80,7 +80,7 @@ function setTag(user_id, tag_id){
                 </div>
                 <div class="box-body">
                     <p id="credit-amount"></p>
-                    <input type="text" id="credit-amount-text" />
+                    <p>Credit to add $<input type="text" id="credit-amount-text" placeholder="50"/>
                     <select name="Users" id="credit-user-dropdown">
 						<option>None</option>
 						@foreach($users as $user)
@@ -93,7 +93,25 @@ function setTag(user_id, tag_id){
                 </div><!-- /.box-body -->
             </div><!-- /.box -->
             
+        </div><!-- /.col (RIGHT) -->
+		<div class="col-md-6">
             <div class="box box-danger">
+                <div class="box-header">
+                	<i class="fa fa-dollar"></i>
+                    <h3 class="box-title">Add Purchase/Payout</h3>
+                </div>
+                <div class="box-body">
+                    <p id="purchase-amount"></p>
+                    <p>Description <input type="text" id="purchase-description-text" placeholder="Genuine Vodka O Vat"/></p>
+					<p>Cost $ <input type="text" id="purchase-cost-text" placeholder="450"/></p>
+                </div><!-- /.box-body -->
+                <div class="box-footer">
+                	<input type="submit" value="Add" onclick="setPurchase(encodeURIComponent($('#purchase-description-text').val()),$('#purchase-cost-text').val())" />
+                </div><!-- /.box-body -->
+            </div><!-- /.box -->
+			
+			
+			<div class="box box-danger">
                 <div class="box-header">
                 	<i class="fa fa-credit-card"></i>
                     <h3 class="box-title">Add Tag to Account</h3>
@@ -112,57 +130,9 @@ function setTag(user_id, tag_id){
                 	<input type="submit" value="Add" onclick="setTag($('#tag-user-dropdown').val(),$('#tag-id-text').val())" />
                 </div><!-- /.box-body -->
             </div><!-- /.box -->
-
-        </div><!-- /.col (RIGHT) -->
-		<div class="col-md-6">
-            <div class="box box-danger">
-                <div class="box-header">
-                	<i class="fa fa-dollar"></i>
-                    <h3 class="box-title">Add Purchase</h3>
-                </div>
-                <div class="box-body">
-                    <p id="purchase-amount"></p>
-                    Cost $<input type="text" id="purchase-cost-text" />
-                    Volume(ml)<input type="text" id="purchase-volume-text" />
-                    <select name="Users" id="purchase-ingredient-dropdown">
-						@foreach($ingredients as $ingredient)
-						<option value="{{{ $ingredient-> id }}}">{{{ $ingredient->name }}}</option>
-						@endforeach
-					</select>
-                </div><!-- /.box-body -->
-                <div class="box-footer">
-                	<input type="submit" value="Add" onclick="setPurchase($('#purchase-ingredient-dropdown').val(),$('#purchase-volume-text').val(),$('#purchase-cost-text').val())" />
-                </div><!-- /.box-body -->
-            </div><!-- /.box -->
-            
-            <div class="box box-danger">
-                <div class="box-header">
-                	<i class="fa fa-dollar"></i>
-                    <h3 class="box-title">Add Payout</h3>
-                </div>
-                <div class="box-body">
-                	@foreach($payouts as $name => $payout)
-                	{{{$name . ' ' . money_format('%n', $payout)}}} <br>
-                	@endforeach
-                    <p id="payout-status"></p>
-                    <input type="text" id="payout-amount-text" />
-                    <select name="Users" id="payout-user-dropdown">
-						<option value="all">Payout this value 7 times</option>
-						<option value="Beniac">Beniac</option>
-						<option value="Bliss">Bliss</option>
-						<option value="Brand">Brand</option>
-						<option value="McNulty">McNulty</option>
-						<option value="Morris">Morris</option>
-						<option value="Pullar">Pullar</option>
-						<option value="Straton">Straton</option>
-					</select>
-                </div><!-- /.box-body -->
-                <div class="box-footer">
-                	<input type="submit" value="Add" onclick="setPayout($('#payout-user-dropdown').val(),$('#payout-amount-text').val())" />
-                </div><!-- /.box-body -->
-            </div><!-- /.box -->
-
         </div><!-- /.col (LEFT) -->
+		
+		
         
 	</div><!-- /.row (main row) -->
 

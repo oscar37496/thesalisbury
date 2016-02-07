@@ -18,7 +18,6 @@ class SysadminController extends BaseController {
 		
 		$data ['assets'] = $this->getAssets ();
 		$data ['liabilities'] = $this->getLiabilities ();
-		$data ['stock_value'] = $this->getStockValue ();
 		$data ['cash_on_hand'] = $this->getCashOnHand ();
 		$data ['revenue_24h'] = DB::select( 'SELECT SUM(price*quantity)+0 `total` FROM transactions WHERE timestamp > (NOW()-INTERVAL 1 DAY)')[0]->total;
 		$data ['revenue_7d'] = DB::select( 'SELECT SUM(price*quantity)+0 `total` FROM transactions WHERE timestamp > (NOW()-INTERVAL 7 DAY)')[0]->total;
@@ -39,16 +38,14 @@ class SysadminController extends BaseController {
 		$data ['user']->load ( 'transaction', 'transaction.sku', 'bankTransaction' );
 		
 		$data ['users'] = User::all ()->sortBy ( 'first_name' );
-		$data ['ingredients'] = Ingredient::all ();
 		
 		$boys = array (
-				'beniac',
-				'bliss',
-				'brand',
-				'mcnulty',
-				'morris',
-				'pullar',
-				'straton' 
+				'twr',
+				'clarkson',
+				'chernov',
+				'biscoe',
+				'morgan',
+				'mcclelland' 
 		);
 		
 		foreach ( $boys as $lad ) {
@@ -73,17 +70,6 @@ class SysadminController extends BaseController {
 		$data ['users'] = User::all ()->sortBy ( 'first_name' );
 		
 		$this->layout->content = View::make ( 'sysadmin.transactions', $data );
-	}
-	public function getSysadminPurchases() {
-		$data = app ( 'request_data' );
-		$data ['user'] = User::where ( 'id', $data ['id'] )->first ();
-		$data ['location'] = 'Purchases';
-		$data ['description'] = 'A list of all stock purchases';
-		$data ['bank_transactions'] = BankTransaction::all ();
-		$data ['purchases'] = Purchase::all ();
-		$data ['purchases']->load ( 'ingredient' );
-		
-		$this->layout->content = View::make ( 'sysadmin.purchases', $data );
 	}
 	public function getSysadminCashTransactions() {
 		$data = app ( 'request_data' );
@@ -236,15 +222,6 @@ class SysadminController extends BaseController {
 		$user->save ();
 		return $user ['first_name'] . ' ' . $user ['last_name'] . ' was credited with ' . money_format ( '%n', $amount / 100 );
 	}
-	public function updatePurchase($id, $volume, $cost) {
-		setlocale ( LC_MONETARY, "en_US.UTF-8" );
-		$p = new Purchase ();
-		$p->volume = $volume;
-		$p->ingredient_id = $id;
-		$p->cost = $cost;
-		$p->save ();
-		return $volume . 'ml of ' . Ingredient::where ( 'id', $id )->first ()['name'] . ' was bought for ' . money_format ( '%n', $cost / 100 );
-	}
 	public function setBankTransactionType($transactionid, $type) {
 		$t = BankTransaction::where ( 'id', $transactionid )->first ();
 		
@@ -292,30 +269,6 @@ class SysadminController extends BaseController {
 		$t->save ();
 		
 		return $type;
-	}
-	public function linkPurchaseBank($id, $transactionid) {
-		$purchase = Purchase::where ( 'id', $id )->first ();
-		if ($purchase->cash_transaction_id != NULL)
-			CashTransaction::where ( 'id', $purchase->cash_transaction_id )->delete ();
-		$purchase->cash_transaction_id = NULL;
-		$purchase->bank_transaction_id = $transactionid;
-		$purchase->save ();
-		$transaction = BankTransaction::where ( 'id', $transactionid )->first ();
-		return 'Bank ' . $transaction->date . ' ' . money_format ( '%n', $transaction->amount / 100 ) . ' ' . $transaction->description;
-	}
-	public function linkPurchaseCash($id) {
-		$purchase = Purchase::where ( 'id', $id )->first ();
-		if ($purchase->cash_transaction_id != NULL)
-			CashTransaction::where ( 'id', $purchase->cash_transaction_id )->delete ();
-		$transaction = new CashTransaction ();
-		$transaction->amount = - $purchase->cost;
-		$transaction->app_type = 'STOCKPURCHASE';
-		$transaction->app_description = $purchase->ingredient->name;
-		$transaction->save ();
-		$purchase->cash_transaction_id = $transaction->id;
-		$purchase->bank_transaction_id = NULL;
-		$purchase->save ();
-		return 'Cash ' . $transaction->date . ' ' . money_format ( '%n', $transaction->amount / 100 ) . ' ' . $transaction->description;
 	}
 	public function uploadBankTransactions() {
 		if (Input::hasFile ( 'csv' )) {
@@ -366,25 +319,6 @@ class SysadminController extends BaseController {
 			return '';
 		}
 	}
-	public function setPayout($user, $amount) {
-		if (strcmp ( $user, 'all' ) == 0) {
-			$this->setPayout ( 'beniac', $amount );
-			$this->setPayout ( 'bliss', $amount );
-			$this->setPayout ( 'brand', $amount );
-			$this->setPayout ( 'mcnulty', $amount );
-			$this->setPayout ( 'morris', $amount );
-			$this->setPayout ( 'pullar', $amount );
-			$this->setPayout ( 'straton', $amount );
-			return money_format ( '%n', $amount / 100 ) . ' was paid out to all 7 syndicate members. (Total of ' . money_format ( '%n', 7 * $amount / 100 ) . ' paid out)';
-		} else {
-			$t = new CashTransaction ();
-			$t->amount = - $amount;
-			$t->app_type = 'PAYOUT';
-			$t->app_description = $user;
-			$t->save ();
-			return money_format ( '%n', $amount / 100 ) . ' was paid out to ' . $user;
-		}
-	}
 	
 	public function setNFCTag($user, $tag){
 		if (($user_object = User::where ( 'id', $user )->first ()) != NULL){
@@ -406,8 +340,7 @@ class SysadminController extends BaseController {
 		// DB::select('SELECT balance FROM bank_transactions ORDER BY date DESC LIMIT 0, 1')[0]->balance;
 		$bank_balance = ($bank_balance > 0 ? $bank_balance : 0);
 		$cash = DB::select ( 'SELECT SUM(amount) `total` FROM cash_transactions' )[0]->total - DB::select ( "SELECT SUM(amount) `total` FROM bank_transactions WHERE app_type = 'CASHDEPOSIT'" )[0]->total;
-		$stock_value = $this->getStockValue ();
-		return $tab_assets + $bank_balance + $cash + $stock_value;
+		return $tab_assets + $bank_balance + $cash;
 	}
 	private function getLiabilities() {
 		$tab_liabilities = DB::select ( 'SELECT SUM(balance) `total` FROM users WHERE balance > 0' )[0]->total;
@@ -425,43 +358,6 @@ class SysadminController extends BaseController {
 		$cash = DB::select ( 'SELECT SUM(amount) `total` FROM cash_transactions' )[0]->total - DB::select ( "SELECT SUM(amount) `total` FROM bank_transactions WHERE app_type = 'CASHDEPOSIT'" )[0]->total;
 		return $bank_balance + $cash;
 	}
-	private function getStockValue() {
-		return $this->getStockValueByDate ( date ( "Y-m-d H:i:s" ) );
-	}
-	private function getStockValueByDate($time) {
-		$stock_volumes = DB::select ( 'SELECT t1.ingredient_id, t1.volume, t1.timestamp FROM stocktakes t1 WHERE t1.timestamp = (SELECT MAX(t2.timestamp) FROM stocktakes t2 WHERE t2.timestamp <= ? AND t2.ingredient_id = t1.ingredient_id)', array (
-				$time 
-		) );
-		$stock_value = 0;
-		foreach ( $stock_volumes as $stock_volume ) {
-			$purchases = DB::select ( 'SELECT volume, cost, timestamp FROM purchases WHERE ingredient_id = ? AND timestamp < ? ORDER BY timestamp DESC', array (
-					$stock_volume->ingredient_id,
-					$time 
-			) );
-			
-			if (isset ( $purchases [0] )) {
-				$j = 0;
-				while ( isset ( $purchases [$j] ) && $purchases [$j]->timestamp > $stock_volume->timestamp ) {
-					// $stock_volume->volume += $purchases[$j]->volume;
-					$stock_value += $purchases [$j]->cost;
-					$j ++;
-				}
-				
-				$volume_iterated = 0;
-				$i = 0;
-				$value = 0;
-				while ( isset ( $purchases [$i] ) && $volume_iterated <= $stock_volume->volume ) {
-					$volume_iterated += $purchases [$i]->volume;
-					$value += $purchases [$i]->cost;
-					$i ++;
-				}
-				$value += - ($volume_iterated - $stock_volume->volume) * ($purchases [$i - 1]->cost / $purchases [$i - 1]->volume);
-				$stock_value += $value;
-			}
-		}
-		
-		return $stock_value;
-	}
 	private function getPayouts() {
 		return - DB::select ( "SELECT SUM(amount) `total` FROM bank_transactions WHERE app_type = 'PAYOUT'" )[0]->total - DB::select ( "SELECT SUM(amount) `total` FROM cash_transactions WHERE app_type = 'PAYOUT'" )[0]->total;
 	}
@@ -469,13 +365,9 @@ class SysadminController extends BaseController {
 		// types :
 		// cash - 1
 		// bank - 2
-		// purchase - 3
-		// stocktake - 4
 		// transaction - 5
 		$a = DB::select ( "SELECT 1 AS type, timestamp, amount, app_type AS transaction_type, NULL AS balance FROM cash_transactions UNION ALL
 			SELECT 2, date, amount, app_type, balance FROM bank_transactions UNION ALL
-			SELECT 3, timestamp, 0, NULL, NULL FROM purchases UNION ALL
-			SELECT 4, timestamp, 0, NULL, NULL FROM stocktakes UNION ALL
 			SELECT 5, timestamp, (quantity*price), NULL, NULL AS amount FROM transactions
 			ORDER BY timestamp" );
 		
@@ -507,12 +399,6 @@ class SysadminController extends BaseController {
 					if ($c->transaction_type === 'TABCREDIT')
 						$tab_assets -= $c->amount;
 					$bank_balance = $c->balance;
-					break;
-				case 3 : // purchase
-					$stock_value = $this->getStockValueByDate ( $c->timestamp );
-					break;
-				case 4 : // stocktake
-					$stock_value = $this->getStockValueByDate ( $c->timestamp );
 					break;
 				case 5 : // transaction
 					$tab_assets += $c->amount;

@@ -38,10 +38,7 @@
 			<a href="/account/charles/users"> <i class="fa fa-envelope"></i> <span>Message Users</span> <small class="badge pull-right bg-orange">Charles</small></a>
 		</li>
 		@endif
-		@if( $user->is_admin)
-		<li @if(strcmp($location, 'Stocktake') == 0) class="active" @endif>
-			<a href="/account/admin/stocktake"> <i class="fa fa-barcode"></i> <span>Stocktake</span> <small class="badge pull-right bg-green">Admin</small></a>
-		</li>		
+		@if( $user->is_admin)	
 		<li class="treeview @if(strcmp($location, 'All Users') == 0 || strcmp($location, 'All Cards') == 0 || strcmp($location, 'All Transactions') == 0) active @endif">
             <a href="#">
                 <i class="fa fa-users"></i>
@@ -67,9 +64,6 @@
 		</li>
 		<li @if(strcmp($location, 'Operations') == 0) class="active" @endif>
 			<a href="/account/sysadmin/operations"> <i class="fa fa-dollar"></i> <span>Operations</span> <small class="badge pull-right bg-red">SysAdmin</small></a>
-		</li>
-		<li @if(strcmp($location, 'Purchases') == 0) class="active" @endif>
-			<a href="/account/sysadmin/purchases"> <i class="fa fa-dollar"></i> <span>Purchases</span> <small class="badge pull-right bg-red">SysAdmin</small></a>
 		</li>
 		<li @if(strcmp($location, 'Bank Transactions') == 0) class="active" @endif>
 			<a href="/account/sysadmin/transactions"> <i class="fa fa-dollar"></i> <span>Bank Transactions</span> <small class="badge pull-right bg-red">SysAdmin</small></a>

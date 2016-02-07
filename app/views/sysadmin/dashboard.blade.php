@@ -72,22 +72,6 @@ function setCredit($id, $amount){
 				<a href="/account/cards" class="small-box-footer"> More info <i class="fa fa-arrow-circle-right"></i> </a>
 			</div>
 		</div><!-- ./col -->
-		<div class="col-lg-3 col-xs-6">
-			<!-- small box -->
-			<div class="small-box bg-yellow">
-				<div class="inner">
-					<h3> {{{ substr(money_format('%n',($stock_value)/100),0,-3) }}}<sup style="font-size: 20px">{{{ substr(number_format(abs(($stock_value)/100), 2),-3) }}}</sup>
-					</h3>
-					<p>
-						Value of Stock
-					</p>
-				</div>
-				<div class="icon">
-					<i class="ion ion-ios-people"></i>
-				</div>
-				<a href="/account/friends" class="small-box-footer"> More info <i class="fa fa-arrow-circle-right"></i> </a>
-			</div>
-		</div><!-- ./col -->
 	</div><!-- /.row -->
 	
 	<div class="row">
@@ -125,22 +109,6 @@ function setCredit($id, $amount){
 		</div><!-- ./col -->
 		<div class="col-lg-3 col-xs-6">
 			<!-- small box -->
-			<div class="small-box bg-teal">
-				<div class="inner">
-					<h3> {{{ substr(money_format('%n',$payout/7/100),0,-3) }}}<sup style="font-size: 20px">{{{ substr(number_format(abs($payout/7/100), 2),-3) }}}</sup>
-					</h3>
-					<p>
-						Payouts Per Person to Date
-					</p>
-				</div>
-				<div class="icon">
-					<i class="ion ion-card"></i>
-				</div>
-				<a href="/account/cards" class="small-box-footer"> More info <i class="fa fa-arrow-circle-right"></i> </a>
-			</div>
-		</div><!-- ./col -->
-		<div class="col-lg-3 col-xs-6">
-			<!-- small box -->
 			<div class="small-box bg-maroon">
 				<div class="inner">
 					<h3> {{{ substr(money_format('%n',($takings_to_date)/100),0,-3) }}}<sup style="font-size: 20px">{{{ substr(number_format(abs(($takings_to_date)/100), 2),-3) }}}</sup>
@@ -165,7 +133,7 @@ function setCredit($id, $amount){
 					<h3> {{{ substr(money_format('%n',$revenue_24h/100),0,-3) }}}<sup style="font-size: 20px">{{{ substr(number_format(abs($revenue_24h/100), 2),-3) }}}</sup>
 					</h3>
 					<p>
-						Revenue 24h
+						Tab Purchases 24h
 					</p>
 				</div>
 				<div class="icon">
@@ -181,7 +149,7 @@ function setCredit($id, $amount){
 					<h3> {{{ substr(money_format('%n',$revenue_7d/100),0,-3) }}}<sup style="font-size: 20px">{{{ substr(number_format(abs($revenue_7d/100), 2),-3) }}}</sup>
 					</h3>
 					<p>
-						Revenue Weekly
+						Tab Purchases 7 days
 					</p>
 				</div>
 				<div class="icon">
@@ -197,7 +165,7 @@ function setCredit($id, $amount){
 					<h3> {{{ substr(money_format('%n',$revenue_todate/100),0,-3) }}}<sup style="font-size: 20px">{{{ substr(number_format(abs($revenue_todate/100), 2),-3) }}}</sup>
 					</h3>
 					<p>
-						Revenue to Date
+						Tab Purchases to Date
 					</p>
 				</div>
 				<div class="icon">
