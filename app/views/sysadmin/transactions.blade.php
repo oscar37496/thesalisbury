@@ -37,10 +37,6 @@
 									<td id="{{{ $transaction->id }}}">
 										@if( isset($transaction -> user))
 											{{{ $transaction -> user -> first_name . ' ' . $transaction -> user -> last_name }}} 
-										@elseif (Purchase::where('bank_transaction_id', $transaction->id)->count() > 0)
-											@foreach($transaction -> purchase as $purchase)
-												<p>{{{ $purchase -> volume . 'ml of ' . $purchase -> name .' on '.date('M j',strtotime($purchase -> timestamp)) }}}</p>
-											@endforeach
 										@elseif (isset($transaction -> app_type))
 											{{{ $transaction -> app_type .' '. $transaction -> app_description }}}
 										@endif</td>
@@ -51,16 +47,6 @@
 									@endforeach
 									</select></td>
 									<td>
-										<select name="Users" id="payout-user-dropdown" onchange="linkPayout({{{ $transaction->id }}}, 'PAYOUT', this.value);">
-											<option></option>
-											<option value="Beniac">Beniac</option>
-											<option value="Bliss">Bliss</option>
-											<option value="Brand">Brand</option>
-											<option value="McNulty">McNulty</option>
-											<option value="Morris">Morris</option>
-											<option value="Pullar">Pullar</option>
-											<option value="Straton">Straton</option>
-										</select>
 										<button type="button" onclick="linkTransaction({{{ $transaction->id }}},'CASHDEPOSIT')">Deposit</button>
 										<button type="button" onclick="linkTransaction({{{ $transaction->id }}},'NONE')">Clear</button>
 									</td>
@@ -75,7 +61,8 @@
 								<th>Amount</th>
 								<th>Type</th>
 								<th>Description</th>
-								<th>User</th>
+								<th>Linked Item</th>
+								<th>Set User</th>
 								<th>Set Type</th>
 								<th>Balance</th>
 							</tr>
@@ -146,8 +133,6 @@
              });
         }
     };
-    
 </script>
-
 @stop
 

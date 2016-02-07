@@ -66,7 +66,7 @@ class SysadminController extends BaseController {
 		$data ['location'] = 'Bank Transactions';
 		$data ['description'] = 'A list of all bank transactions';
 		$data ['transactions'] = BankTransaction::all ();
-		$data ['transactions']->load ( 'user', 'purchase' );
+		$data ['transactions']->load ( 'user' );
 		$data ['users'] = User::all ()->sortBy ( 'first_name' );
 		
 		$this->layout->content = View::make ( 'sysadmin.transactions', $data );
@@ -77,7 +77,7 @@ class SysadminController extends BaseController {
 		$data ['location'] = 'Cash Transactions';
 		$data ['description'] = 'A list of all cash transactions';
 		$data ['transactions'] = CashTransaction::all ();
-		$data ['transactions']->load ( 'user', 'purchase' );
+		$data ['transactions']->load ( 'user' );
 		$data ['users'] = User::all ()->sortBy ( 'first_name' );
 		
 		$deposits = BankTransaction::where ( 'app_type', 'CASHDEPOSIT' )->get ();
@@ -91,18 +91,15 @@ class SysadminController extends BaseController {
 		
 		$this->layout->content = View::make ( 'sysadmin.cashtransactions', $data );
 	}
+	// Endpoint called from operations view to download transactions of all types
 	public function getCSV() {
 		
 		// types :
 		// cash - 1
 		// bank - 2
-		// purchase - 3
-		// stocktake - 4
 		// transaction - 5
 		$a = DB::select ( "SELECT 1 AS type, timestamp, amount, app_type AS transaction_type, NULL AS balance FROM cash_transactions UNION ALL
 			SELECT 2, date, amount, app_type, balance FROM bank_transactions UNION ALL
-			SELECT 3, timestamp, 0, NULL, NULL FROM purchases UNION ALL
-			SELECT 4, timestamp, 0, NULL, NULL FROM stocktakes UNION ALL
 			SELECT 5, timestamp, (quantity*price), NULL, NULL AS amount FROM transactions
 			ORDER BY timestamp" );
 		
@@ -211,6 +208,16 @@ class SysadminController extends BaseController {
 		$transaction->save ();
 		return money_format ( '%n', $amount / 100 );
 	}
+	// Endpoint called from opertions view to add cash purchase
+	public function updatePurchase($cost, $desc) {
+		$transaction = new CashTransaction ();
+		$transaction->amount = -$cost;
+		$transaction->app_type = "CASHPURCHASE";
+		$transaction->app_description = urldecode($desc);
+		$transaction->save ();
+		return money_format ( '%n', $cost / 100 );
+	}
+	// Endpoint called from operations view to add credit to a tab account
 	public function updateCredit($id, $amount) {
 		$t = new CashTransaction ();
 		$t->user_id = $id;
@@ -222,6 +229,7 @@ class SysadminController extends BaseController {
 		$user->save ();
 		return $user ['first_name'] . ' ' . $user ['last_name'] . ' was credited with ' . money_format ( '%n', $amount / 100 );
 	}
+	// Called from ank transactio view to update individual bank transaction records
 	public function setBankTransactionType($transactionid, $type) {
 		$t = BankTransaction::where ( 'id', $transactionid )->first ();
 		
