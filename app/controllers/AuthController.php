@@ -12,7 +12,7 @@ class AuthController extends BaseController {
 		session_start();
 		FacebookSession::setDefaultApplication($_ENV['facebook_api_id'], $_ENV['facebook_api_secret']);
 		$helper = new FacebookRedirectLoginHelper(action('AuthController@authFacebookCallback'));
-		$required_scope = 'user_friends';
+		$required_scope = ['public_profile', 'user_friends'];
 		return Redirect::to($helper -> getLoginUrl(array('scope' => $required_scope)));
 	}
 
@@ -51,7 +51,7 @@ class AuthController extends BaseController {
 				if(($user -> first_name = $me -> getFirstName()) == NULL) $user -> first_name = "";
 				if(($user -> middle_name = $me -> getMiddleName()) == NULL) $user -> middle_name = "";
 				if(($user -> last_name = $me -> getLastName()) == NULL) $user -> last_name = "";
-				if(($user -> gender = $object -> getProperty('gender')) == NULL) $user -> gender = "male";			
+				if(($user -> gender = $object -> getProperty('gender')) == NULL) $user -> gender = "male";
 				$notification = new Notification();
 				$notification -> user_id = $user -> id;
 				$user -> save();
