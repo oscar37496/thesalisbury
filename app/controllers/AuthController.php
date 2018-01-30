@@ -13,7 +13,7 @@ class AuthController extends BaseController {
 		FacebookSession::setDefaultApplication($_ENV['facebook_api_id'], $_ENV['facebook_api_secret']);
 		$helper = new FacebookRedirectLoginHelper(action('AuthController@authFacebookCallback'));
 		$required_scope = ['public_profile', 'user_friends'];
-		return Redirect::to($helper -> getLoginUrl(array('scope' => $required_scope)));
+		return Redirect::to($helper -> getLoginUrl($required_scope));
 	}
 
 	function authFacebookCallback() {
