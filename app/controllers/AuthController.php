@@ -29,7 +29,7 @@ class AuthController extends BaseController {
 			return Redirect::to('/') -> with('error', 'Server Error');
 		}
 		if (isset($session) && $session) {
-			$response =   (new FacebookRequest($session, 'GET', '/me')) -> execute();
+			$response =   (new FacebookRequest($session, 'GET', '/me?fields=id,first_name,middle_name,last_name,gender')) -> execute();
 			$object = $response -> getGraphObject();
 			$me = $response -> getGraphObject(GraphUser::className());
 			$id = $me -> getID();
