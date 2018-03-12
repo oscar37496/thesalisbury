@@ -41,16 +41,16 @@ $("#"+id).load(url)
 									<td>{{{ $user['middle_name'] }}}</td>
 									<td>{{{ $user['last_name'] }}}</td>
 									<td>@if($user['is_activated'])
-											Activated <button type="button" onclick="loadAjax({{{ $key }}}, '/account/admin/users/{{{ $key }}}/deactivate')">Deactivate</button>
+											Activated <button type="button" onclick="loadAjax('{{{ $key }}}', '/account/admin/users/{{{ $key }}}/deactivate')">Deactivate</button>
 										@else
-											Deactivated <button type="button" onclick="loadAjax({{{ $key }}}, '/account/admin/users/{{{ $key }}}/activate')">Activate</button>
+											Deactivated <button type="button" onclick="loadAjax('{{{ $key }}}', '/account/admin/users/{{{ $key }}}/activate')">Activate</button>
 										@endif	
 									</td>
 									<td>
 										@if($user['is_social'])
-											Social <button type="button" onclick="loadAjax({{{ $key }}}, '/account/admin/users/{{{ $key }}}/remove-social')">Remove Social</button>
+											Social <button type="button" onclick="loadAjax('{{{ $key }}}', '/account/admin/users/{{{ $key }}}/remove-social')">Remove Social</button>
 										@else
-											Not Social <button type="button" onclick="loadAjax({{{ $key }}}, '/account/admin/users/{{{ $key }}}/make-social')">Make Social</button>
+											Not Social <button type="button" onclick="loadAjax('{{{ $key }}}', '/account/admin/users/{{{ $key }}}/make-social')">Make Social</button>
 										@endif	
 									</td>
 									<td>{{{ money_format('%n', $user['total_spent_last_week'] / 100 ) }}}</td>
